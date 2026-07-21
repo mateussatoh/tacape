@@ -1,6 +1,6 @@
 {
   "name": "tacape",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Compressed, action-first output plus language-agnostic engineering principles. Bans the em dash.",
   "contextFileName": "AGENTS.md"
 }

@@ -43,10 +43,14 @@ EN=$(printf '\u2013')
 # ---------------------------------------------------------------------------
 group 'repo invariant'
 
-# -I skips binary files. A PNG's bytes match the pattern by coincidence, and a
-# binary has no prose to fix, so a hit there is always a false positive.
-HITS=$(grep -rlIP '\x{2013}|\x{2014}|\x{2015}' . --exclude-dir=.git 2>/dev/null)
-assert_empty 'no dash-family character anywhere in the repo' "$HITS"
+# Same target as both hooks: em dash only, prose files only. A rule enforced at three layers with
+# three different definitions is three rules, and the loosest one teaches people to ignore the rest.
+# -I skips binary files, whose bytes match the pattern by coincidence.
+HITS=$(grep -rlIP '\x{2014}' . --exclude-dir=.git \
+  --include='*.md' --include='*.mdx' --include='*.markdown' --include='*.txt' --include='*.rst' \
+  --include='*.html' --include='*.htm' --include='*.jsx' --include='*.tsx' --include='*.vue' \
+  --include='*.svelte' --include='*.astro' 2>/dev/null)
+assert_empty 'no em dash in any prose file in the repo' "$HITS"
 
 for f in .claude-plugin/plugin.json .claude-plugin/marketplace.json \
          .codex-plugin/plugin.json gemini-extension.json; do
@@ -75,16 +79,14 @@ done
 group 'em dash guard: denies'
 
 OUT=$(printf '{"tool_input":{"file_path":"a.md","content":"x %s y"}}' "$EM" | $GUARD)
-assert_contains 'content with em dash is denied' '"permissionDecision":"deny"' "$OUT"
+assert_contains 'em dash in markdown is denied' '"permissionDecision":"deny"' "$OUT"
 
-OUT=$(printf '{"tool_input":{"file_path":"a.ts","new_string":"a %s b"}}' "$EM" | $GUARD)
-assert_contains 'new_string with em dash is denied' '"permissionDecision":"deny"' "$OUT"
-
-OUT=$(printf '{"tool_input":{"file_path":"a.md","content":"x %s y"}}' "$EN" | $GUARD)
-assert_contains 'en dash is denied too' 'U+2013' "$OUT"
+# UI copy is the case the guard exists for: prose that reaches a user's screen.
+OUT=$(printf '{"tool_input":{"file_path":"Btn.tsx","new_string":"<p>a %s b</p>"}}' "$EM" | $GUARD)
+assert_contains 'em dash in a component is denied' '"permissionDecision":"deny"' "$OUT"
 
 # Regression: a field list missed this shape entirely. The walk must find it.
-OUT=$(printf '{"tool_input":{"file_path":"a.ts","edits":[{"new_string":"ok"},{"new_string":"b %s c"}]}}' "$EM" | $GUARD)
+OUT=$(printf '{"tool_input":{"file_path":"a.mdx","edits":[{"new_string":"ok"},{"new_string":"b %s c"}]}}' "$EM" | $GUARD)
 assert_contains 'nested edits array is denied' '"permissionDecision":"deny"' "$OUT"
 assert_contains 'deny message names the payload path' 'edits[1]' "$OUT"
 
@@ -93,13 +95,25 @@ group 'em dash guard: allows'
 
 # An allow must emit NOTHING. Emitting permissionDecision "allow" would auto-approve every
 # write in the session, which is a far worse bug than the one this hook fixes.
-OUT=$(echo '{"tool_input":{"content":"x - y"}}' | $GUARD)
+OUT=$(echo '{"tool_input":{"file_path":"a.md","content":"x - y"}}' | $GUARD)
 assert_empty 'clean payload emits nothing, does not auto-approve' "$OUT"
 
-OUT=$(printf '{"tool_input":{"old_string":"a %s b","new_string":"a, b"}}' "$EM" | $GUARD)
+# The en dash is correct in a numeric range and carries none of the machine-written tell.
+# It was in scope once; denying it fired on writes that were never the problem.
+OUT=$(printf '{"tool_input":{"file_path":"a.md","content":"2020%s2024"}}' "$EN" | $GUARD)
+assert_empty 'en dash in a range is allowed' "$OUT"
+
+# A guard aimed at how text READS has no business in a file nobody reads as text.
+OUT=$(printf '{"tool_input":{"file_path":"f.json","content":"{\\"k\\":\\"%s\\"}"}}' "$EM" | $GUARD)
+assert_empty 'em dash in a non-prose file is allowed' "$OUT"
+
+OUT=$(printf '{"tool_input":{"file_path":"parser.test.ts","new_string":"expect(\\"%s\\")"}}' "$EM" | $GUARD)
+assert_empty 'em dash in a test fixture is allowed' "$OUT"
+
+OUT=$(printf '{"tool_input":{"file_path":"a.md","old_string":"a %s b","new_string":"a, b"}}' "$EM" | $GUARD)
 assert_empty 'removing an existing em dash is allowed' "$OUT"
 
-OUT=$(printf '{"tool_input":{"content":"a %s b"}}' "$EM" | TACAPE_ALLOW_EMDASH=1 $GUARD)
+OUT=$(printf '{"tool_input":{"file_path":"a.md","content":"a %s b"}}' "$EM" | TACAPE_ALLOW_EMDASH=1 $GUARD)
 assert_empty 'escape hatch allows' "$OUT"
 
 OUT=$(printf 'not json at all' | $GUARD)

@@ -3,71 +3,73 @@
 </p>
 
 <p align="center">
-  <img src="./tacape-banner.png" width="474" height="281" alt="Tacape banner: Tacape bonks Cloud, OpenAI, and Gemini verbosity">
+  <img src="./tacape-banner.png" width="474" height="281" alt="Banner do tacape: o tacape acerta a verbosidade do Cloud, da OpenAI e do Gemini">
 </p>
 
 <p align="center">
-  <em>A tacape is a wooden war club. Blunt, short, ends the conversation.</em>
+  <em>Tacape é uma clava de guerra de madeira. Curto, direto, encerra a conversa.</em>
 </p>
 
 <p align="center">
-  Your agent stops burying the answer, and starts writing code that survives review.
+  Seu agente para de enterrar a resposta e passa a escrever código que sobrevive ao review.
 </p>
 
 <p align="center">
   <a href="https://github.com/mateussatoh/tacape/stargazers"><img src="https://img.shields.io/github/stars/mateussatoh/tacape?style=flat&color=b5651d" alt="Stars"></a>
-  <a href="./INSTALL.md"><img src="https://img.shields.io/badge/works_with-5_agent_families-b5651d?style=flat" alt="Agents"></a>
-  <a href="./tests/run.sh"><img src="https://img.shields.io/badge/tests-46_passing-4c9a2a?style=flat" alt="Tests"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/mateussatoh/tacape?style=flat" alt="License"></a>
+  <a href="./INSTALL.md"><img src="https://img.shields.io/badge/funciona_com-5_familias_de_agente-b5651d?style=flat" alt="Agentes"></a>
+  <a href="./tests/run.sh"><img src="https://img.shields.io/badge/testes-48_passando-4c9a2a?style=flat" alt="Testes"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/mateussatoh/tacape?style=flat" alt="Licença"></a>
 </p>
 
 <p align="center">
-  <a href="#the-problem-is-not-that-agents-talk-too-much">Why</a> ·
-  <a href="#install">Install</a> ·
-  <a href="#see-it">See it</a> ·
-  <a href="#layer-3-the-part-nobody-else-ships">Principles</a> ·
-  <a href="#the-one-original-idea">The guard</a> ·
-  <a href="#levels">Levels</a> ·
-  <a href="#honest-numbers">Honest numbers</a> ·
-  <a href="#where-the-principles-come-from">Credits</a>
+  <a href="#o-problema-nao-e-que-agentes-falam-demais">Por quê</a> ·
+  <a href="#instalacao">Instalação</a> ·
+  <a href="#veja-funcionando">Veja funcionando</a> ·
+  <a href="#camada-3-a-parte-que-ninguem-mais-entrega">Princípios</a> ·
+  <a href="#a-unica-ideia-original">O guard</a> ·
+  <a href="#niveis">Níveis</a> ·
+  <a href="#numeros-honestos">Números honestos</a> ·
+  <a href="#de-onde-vem-os-principios">Créditos</a>
 </p>
 
-<p align="center"><a href="./README_pt.md">Português brasileiro</a></p>
+<p align="center"><a href="./README_en.md">English</a></p>
 
 ---
 
-## The problem is not that agents talk too much
+## O problema não é que agentes falam demais
 
-It is, a little.
+É um pouco.
 
-But imagine an agent answer as a negotiation. One part knows the answer. Another part wants
-to explain every possible edge case. A third part wants to make the response sound helpful
-before doing anything helpful.
+Mas imagine a resposta de um agente como uma negociação. Uma parte sabe a resposta. Outra quer
+explicar cada caso extremo possível. Uma terceira quer fazer a resposta soar prestativa antes de
+fazer qualquer coisa prestativa.
 
-The result is familiar: you ask for a fix, receive a small essay, and discover the command
-you need hiding near the end. You understood it. You still did not start.
+O resultado é familiar: você pede uma correção, recebe um pequeno ensaio e descobre o comando que
+precisava escondido perto do fim. Você entendeu. Continua sem ter começado.
 
-Then comes the worse version. The answer is short, the action is first, and the code is
-still wrong. It validates input and casts anyway, catches failures into a log nobody watches,
-or ships without a test. Fast, organized, unsafe.
+Aí vem a versão pior. A resposta é curta, a ação vem primeiro, e o código ainda está errado. Valida
+a entrada e faz o cast mesmo assim, captura falhas em um log que ninguém monitora, ou sobe sem
+teste. Rápido, organizado, inseguro.
 
-There are three failures, and they stack:
+São três falhas, e elas se empilham:
 
-1. Volume hides the fact.
-2. Order hides the action.
-3. Weak engineering hides the defect.
+1. Volume esconde o fato.
+2. Ordem esconde a ação.
+3. Engenharia fraca esconde o defeito.
 
-Three failures, three layers:
+Três falhas, três camadas:
 
-| | Layer | Fixes |
+| | Camada | Corrige |
 |---|---|---|
-| 1 | **Compression** | Volume. Articles, filler, hedging, preamble, closers. |
-| 2 | **Structure** | Order. First line is the action, steps numbered, one next step at the end. |
-| 3 | **Principles** | The code. Fifteen language-agnostic rules, applied while writing and reviewing. |
+| 1 | **Compressão** | Volume. Artigos, filler, hedging, preâmbulo, fechamentos. |
+| 2 | **Estrutura** | Ordem. Primeira linha é a ação, passos numerados, um próximo passo no fim. |
+| 3 | **Princípios** | O código. Quinze regras agnósticas de linguagem, aplicadas ao escrever e ao revisar. |
 
-Plus a hard ban on the em dash, enforced by a hook instead of a prompt rule. That sounds like a typography obsession. It is actually the most interesting part of the repo, and there is [a section on why](#the-one-original-idea).
+Mais um banimento duro do travessão, aplicado por hook em vez de regra de prompt. Isso soa como
+obsessão tipográfica. É na verdade a parte mais interessante do repositório, e existe [uma seção
+explicando por quê](#a-unica-ideia-original).
 
-## Install
+## Instalação
 
 **Claude Code**
 
@@ -76,7 +78,7 @@ claude plugin marketplace add mateussatoh/tacape
 claude plugin install tacape@tacape
 ```
 
-Restart the session. That is the whole thing. Everything else on this page is already on.
+Reinicie a sessão. É isso. Todo o resto desta página já está ligado.
 
 **Codex**
 
@@ -91,289 +93,416 @@ codex plugin add tacape@tacape
 gemini extensions install https://github.com/mateussatoh/tacape
 ```
 
-**Cursor, Windsurf, Cline, Copilot, Aider, Zed, anything else**
+**Cursor, Windsurf, Cline, Copilot, Aider, Zed, qualquer outro**
 
-Every one of them reads a plain instruction file:
+Todos eles leem um arquivo de instrução simples:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mateussatoh/tacape/main/AGENTS.md -o AGENTS.md
 ```
 
-Then symlink it to whatever your agent expects, so one copy stays the source of truth. Per-agent filenames, the skills-registry route, verification commands and uninstall live in **[INSTALL.md](./INSTALL.md)**.
+Depois faça um symlink para o nome que seu agente espera, assim uma cópia só continua sendo a fonte
+da verdade. Nomes de arquivo por agente, a rota via registry de skills, comandos de verificação e
+desinstalação estão no **[INSTALL.md](./INSTALL.md)**.
 
 > [!TIP]
-> Requirements: Node 18 or newer for the hooks. The plain-file install needs nothing at all.
+> Requisitos: Node 18 ou mais novo para os hooks. A instalação por arquivo simples não precisa de nada.
 
 > [!WARNING]
-> **One style plugin at a time.** Two always-on `SessionStart` hooks injecting competing style rules produce drift, not a blend. Uninstall the other one first, then check your settings file, because a plugin uninstall does not remove hooks that a standalone installer wrote directly into settings. That failure mode is real and it is silent: your old plugin keeps running and you cannot work out why nothing changed.
+> **Um plugin de estilo por vez.** Dois hooks `SessionStart` sempre ativos injetando regras de estilo
+> concorrentes produzem drift, não uma mistura. Desinstale o outro primeiro, e depois confira seu
+> arquivo de settings, porque desinstalar um plugin não remove hooks que um instalador standalone
+> escreveu direto no settings. Esse modo de falha é real e é silencioso: seu plugin antigo continua
+> rodando e você não descobre por que nada mudou.
 
-
-## See it
+## Veja funcionando
 
 <table>
 <tr>
-<th width="50%">Default agent</th>
+<th width="50%">Agente padrão</th>
 <th width="50%">tacape</th>
 </tr>
 <tr>
 <td valign="top">
 
-> Sure! I'd be happy to help you with that. The issue you're experiencing is most likely caused by your authentication middleware not properly validating the token expiry. Let me take a look and suggest a fix.
+> Claro! Fico feliz em ajudar com isso. O problema que você está enfrentando provavelmente é causado
+> pelo seu middleware de autenticação não validar corretamente a expiração do token. Deixa eu dar uma
+> olhada e sugerir uma correção.
 
 </td>
 <td valign="top">
 
-> Bug in auth middleware. Token expiry check uses `<`, needs `<=`.
+> Bug no middleware de auth. Checagem de expiração usa `<`, precisa de `<=`.
 
 </td>
 </tr>
 <tr>
 <td valign="top">
 
-> I've looked into the migration. There are a few things going on here. The schema change touches three tables, and you'll want to be careful about the ordering because of the foreign keys. I've updated the first one already. Let me know if you want me to continue with the rest.
+> Investiguei a migração. Tem algumas coisas acontecendo aqui. A mudança de schema toca três tabelas,
+> e você vai querer tomar cuidado com a ordem por causa das foreign keys. Já atualizei a primeira. Me
+> avisa se quiser que eu continue com o resto.
 
 </td>
 <td valign="top">
 
-> `[1/3] users.tenant_id added. Next: backfill it.`
+> `[1/3] users.tenant_id criada. Próximo: backfill.`
 >
-> 1. Run the backfill on a copy first
-> 2. Add the FK on `orders.tenant_id`
-> 3. Drop the old column
+> 1. Rode o backfill numa cópia primeiro
+> 2. Adicione a FK em `orders.tenant_id`
+> 3. Remova a coluna antiga
 >
-> About 20 minutes. Next: run step 1 and paste the row count.
+> Cerca de 20 minutos. Próximo: rode o passo 1 e cole a contagem de linhas.
 
 </td>
 </tr>
 </table>
 
-Look at the second row again. The default version is not much longer. It is organized so that the only actionable sentence is "let me know if you want me to continue", which is not an action, it is a request for permission to keep going. Layer 2 is about that, not about word count.
+Olhe a segunda linha de novo. A versão padrão não é muito mais longa. Ela está organizada de modo que
+a única frase acionável é "me avisa se quiser que eu continue", que não é uma ação, é um pedido de
+permissão para seguir. A camada 2 trata disso, não de contagem de palavras.
 
-Code, commands and error strings are never compressed. Your language is never translated: write Portuguese, get Portuguese back.
+Código, comandos e strings de erro nunca são comprimidos. Seu idioma nunca é traduzido: escreva em
+português, receba português.
 
-## Layer 3: the part nobody else ships
+## Camada 3: a parte que ninguém mais entrega
 
-Layers 1 and 2 shape what the agent says. Layer 3 shapes what it writes, which is the part you live with afterwards.
+As camadas 1 e 2 moldam o que o agente diz. A camada 3 molda o que ele escreve, que é a parte com a
+qual você convive depois.
 
-Same task, an agent with the principles loaded and without:
+Mesma tarefa, um agente com os princípios carregados e outro sem:
 
 ```diff
 - export function getUser(raw: unknown) {
--   if (!isValid(raw)) throw new Error('bad')      // validated, then forgotten
--   const u = raw as User                          // the cast is the whole safety story
+-   if (!isValid(raw)) throw new Error('bad')      // validou, depois esqueceu
+-   const u = raw as User                          // o cast é toda a historia de seguranca
 -   try { return db.users.find(u.id) }
--   catch (e) { log.info('lookup failed', e); return null }   // gone quiet
+-   catch (e) { log.info('lookup failed', e); return null }   // ficou mudo
 - }
 + export function getUser(raw: unknown): User {
-+   const input = UserInput.parse(raw)     // parse once, at the edge, into a type
-+   try {                                  // that cannot hold a bad value   (rule 7)
++   const input = UserInput.parse(raw)     // parse uma vez, na borda, para um tipo
++   try {                                  // que nao consegue guardar valor ruim  (regra 7)
 +     return db.users.find(input.id)
 +   } catch (err) {
-+     alert.capture(err, { op: 'getUser' })  // a retried path must page     (rule 6)
++     alert.capture(err, { op: 'getUser' })  // caminho com retry tem que alertar   (regra 6)
 +     throw err
 +   }
 + }
 ```
 
-The left version passes review, passes tests, and goes silent in production. That is the whole argument.
+A versão da esquerda passa no review, passa nos testes, e fica muda em produção. Esse é o argumento
+inteiro.
 
 <details>
-<summary><strong>All fifteen rules</strong></summary>
+<summary><strong>As quinze regras</strong></summary>
 
 <br>
 
-**1. Boring, searchable, safe to edit.** Obvious beats clever. Name for the domain, not the mechanism: `activateSubscriptionAfterPayment`, never `process`, `handle`, `manager`, `helper`. A good name is the one a stranger greps for. Comments explain WHY, since the code already says what.
+**1. Chato, pesquisável, seguro de editar.** Óbvio ganha de esperto. Nomeie pelo domínio, não pelo
+mecanismo: `activateSubscriptionAfterPayment`, nunca `process`, `handle`, `manager`, `helper`. Um bom
+nome é aquele que um estranho procuraria no grep. Comentários explicam POR QUÊ, já que o código já
+diz o quê.
 
-**2. Abstract late.** Duplication is cheaper than the wrong abstraction. Two similar things are not one thing. You get about three innovation tokens: spend them where the novelty is the product, take the well understood option everywhere else. The exception to "no dependency for something small": crypto, auth, timezone math, and hostile-format parsing. Hand-rolling those is a CVE with your name on it.
+**2. Abstraia tarde.** Duplicação é mais barata que a abstração errada. Duas coisas parecidas não são
+uma coisa só. Você tem cerca de três fichas de inovação: gaste onde a novidade é o produto, escolha a
+opção bem compreendida em todo o resto. A exceção ao "sem dependência para algo pequeno": cripto,
+auth, matemática de fuso horário e parsing de formato hostil. Fazer isso na mão é um CVE com seu nome.
 
-**3. Modules are deep, not wide.** Judge an interface by what a caller must understand, and the implementation by how much work it does for them. A pass-through layer whose methods map one to one onto the layer below is negative value: delete it. And define errors out of existence where you honestly can. An idempotent operation needs no "already applied" branch. Every error eliminated is a branch nobody can get wrong.
+**3. Módulos são profundos, não largos.** Julgue uma interface pelo que quem chama precisa entender, e
+a implementação por quanto trabalho ela faz por essa pessoa. Uma camada de repasse cujos métodos
+mapeiam um para um na camada de baixo tem valor negativo: delete. E defina erros para fora de
+existência onde for honesto. Uma operação idempotente não precisa de ramo "já aplicado". Todo erro
+eliminado é um ramo que ninguém consegue errar.
 
-**4. Write code that is easy to delete.** You will be wrong about the future. Code you can delete in an afternoon costs nothing when you are wrong; code everything extends costs a quarter. Layer by expected lifetime, so the vendor integration and the experiment can be cut out whole. Repeat yourself to avoid a dependency, never to manage one.
+**4. Escreva código fácil de deletar.** Você vai estar errado sobre o futuro. Código que dá para
+deletar em uma tarde não custa nada quando você erra; código que todo mundo estende custa um
+trimestre. Separe em camadas por tempo de vida esperado, para que a integração com o fornecedor e o
+experimento possam ser arrancados inteiros. Repita-se para evitar uma dependência, nunca para
+gerenciar uma.
 
-**5. Boundaries are one-way and enforced.** Dependencies point one direction. Cross through the public interface, never into internals. Verify the enforcement with a negative probe: write the forbidden import, confirm it actually fails, then delete it. A rule that silently never fires is indistinguishable from a rule that passes.
+**5. Fronteiras são de mão única e verificadas.** Dependências apontam em uma direção. Atravesse pela
+interface pública, nunca para dentro dos internos. Verifique a checagem com uma sonda negativa:
+escreva o import proibido, confirme que ele realmente falha, depois delete. Uma regra que nunca
+dispara em silêncio é indistinguível de uma regra que passa.
 
-**6. Failures stay visible.** A caught error on a retried path must reach the alerting system, not just the log. Swallowing an exception into a log line nobody watches is how a system stays broken for days while every dashboard reads green. Never pattern-match a wrapped error's surface field: walk the cause chain, or the next version bump turns a handled case into a crash.
+**6. Falhas ficam visíveis.** Um erro capturado em um caminho com retry precisa chegar ao sistema de
+alerta, não só ao log. Engolir uma exceção em uma linha de log que ninguém monitora é como um sistema
+fica quebrado por dias enquanto todo dashboard aparece verde. Nunca faça pattern match no campo de
+superfície de um erro embrulhado: percorra a cadeia de causa, ou o próximo bump de versão transforma
+um caso tratado em crash.
 
-**7. Make invalid states unrepresentable.** Push correctness into types and schemas at the boundary. A comment saying "must be positive" is a wish. Parse untrusted input once, at the edge. Never return an internal record to a caller you do not control without whitelisting the fields.
+**7. Torne estados inválidos irrepresentáveis.** Empurre correção para tipos e schemas na borda. Um
+comentário dizendo "precisa ser positivo" é um desejo. Faça parse de entrada não confiável uma vez, na
+borda. Nunca retorne um registro interno para quem chama sem whitelist dos campos.
 
-**8. Data and time.** Store instants in UTC, render in the viewer's timezone. Never format a date without an explicit timezone, or the output changes depending on which machine ran it. A store holds what its name says.
+**8. Dados e tempo.** Guarde instantes em UTC, renderize no fuso de quem vê. Nunca formate uma data
+sem fuso explícito, ou a saída muda dependendo da máquina que rodou. Um store guarda o que o nome
+dele diz.
 
-**9. Tests that would have caught it.** Mocking the layer under test hides the bug you are shipping. A suite that is green because everything is faked proves only that the fakes agree. Deterministic, isolated, fast. Test the race, the duplicate, the timeout, the empty list. A bug fix ships with its reproducing test.
+**9. Testes que teriam pego.** Mockar a camada sob teste esconde o bug que você está subindo. Uma
+suíte verde porque tudo é falso prova só que os fakes concordam entre si. Determinística, isolada,
+rápida. Teste a corrida, a duplicata, o timeout, a lista vazia. Correção de bug sobe com o teste que
+reproduz.
 
-**10. Copy and locale.** User-facing text in the product's language, identifiers in English. Never render an internal enum or code raw to a user.
+**10. Texto e locale.** Texto para o usuário no idioma do produto, identificadores em inglês. Nunca
+renderize um enum ou código interno cru para o usuário.
 
-**11. Interface states are not optional.** Every async view handles all four: loading, empty, error, loaded. A blank screen during load is a bug, not a default.
+**11. Estados de interface não são opcionais.** Toda view assíncrona trata os quatro: carregando,
+vazio, erro, carregado. Tela em branco durante o load é bug, não default.
 
-**12. Secrets and destructive actions.** Never run or suggest a command that prints secret values. Confirm before anything irreversible or outward-facing. Approval for one such action does not carry to the next.
+**12. Segredos e ações destrutivas.** Nunca rode ou sugira um comando que imprima valores secretos.
+Confirme antes de qualquer coisa irreversível ou que saia para fora. Aprovação para uma dessas ações
+não vale para a próxima.
 
-**13. Find the file, do not grep the repo.** Map, then scope, then read. Filename search before content search. Scoped before repo-wide. Read the nearby tests before editing.
+**13. Ache o arquivo, não faça grep no repositório inteiro.** Mapeie, depois escopo, depois leia.
+Busca por nome de arquivo antes de busca por conteúdo. Escopo antes de repositório inteiro. Leia os
+testes próximos antes de editar.
 
-**14. Ask versus decide.** Ask only when the answer changes the outcome and the call is the owner's. Do not ask about cosmetics or conventional defaults. Make the call, state it in one line, keep moving.
+**14. Perguntar versus decidir.** Pergunte só quando a resposta muda o resultado e a decisão é de quem
+é dono. Não pergunte sobre cosmética ou default convencional. Decida, diga em uma linha, siga.
 
-**15. Documentation is part of the change.** Each rule lives in exactly one place. Decisions are append-only: supersede, never rewrite. A stale doc is worse than no doc, because it is believed.
+**15. Documentação faz parte da mudança.** Cada regra mora em exatamente um lugar. Decisões são
+append-only: substitua, nunca reescreva. Um doc desatualizado é pior que nenhum doc, porque nele se
+acredita.
 
 </details>
 
-Full text with the reasoning behind each rule: **[`skills/tacape-code/SKILL.md`](./skills/tacape-code/SKILL.md)**.
+Texto completo com o raciocínio por trás de cada regra: **[`skills/tacape-code/SKILL.md`](./skills/tacape-code/SKILL.md)**.
 
 > [!IMPORTANT]
-> **Precedence, and it matters.** The target repo's own `CLAUDE.md`, `AGENTS.md` and visible conventions always win over these principles. tacape never imposes a style on a codebase that consistently does otherwise. A style guide that overrides the house it is a guest in is not a style guide, it is a bulldozer.
+> **Precedência, e isso importa.** O `CLAUDE.md`, o `AGENTS.md` e as convenções visíveis do próprio
+> repositório alvo sempre ganham desses princípios. O tacape nunca impõe um estilo a uma base de
+> código que faz consistentemente de outro jeito. Um guia de estilo que passa por cima da casa onde é
+> convidado não é um guia de estilo, é um trator.
 
-## The one original idea
+## A única ideia original
 
-Layers 1 and 2 are merged from two existing plugins, credited [below](#inspiration). This part is not.
+As camadas 1 e 2 são a fusão de dois plugins existentes, creditados [abaixo](#inspiracao). Esta parte
+não é.
 
-Here is the observation. Every rule you give an agent through a prompt is advisory. It sits in context competing with everything else, and over a long session it loses. You have watched this happen: the agent is perfectly terse for twenty turns and then slowly, without announcing it, goes back to writing essays. Nobody turned it off. It decayed.
+A observação é a seguinte. Toda regra que você dá a um agente por prompt é conselho. Ela fica no
+contexto competindo com todo o resto, e ao longo de uma sessão longa ela perde. Você já viu isso
+acontecer: o agente fica perfeitamente conciso por vinte turnos e depois, devagar, sem avisar, volta a
+escrever ensaios. Ninguém desligou. Decaiu.
 
-There is a second failure no prompt rule can fix at all. If the agent pastes a template, or generates a file from a string it fetched, or copies a block from documentation, the rule was never consulted. The character arrives from outside the model's own composition.
+Existe uma segunda falha que nenhuma regra de prompt corrige. Se o agente cola um template, ou gera um
+arquivo a partir de uma string que baixou, ou copia um bloco da documentação, a regra nunca foi
+consultada. O caractere chegou de fora da composição do próprio modelo.
 
-So: take one rule, and move it out of the prompt and into the tool layer, where it is not advice and cannot decay.
+Então: pegue uma regra e mova ela do prompt para a camada de ferramentas, onde ela não é conselho e
+não decai.
 
-tacape does this for the em dash. A `PreToolUse` hook on `Write`, `Edit` and `NotebookEdit` walks every string in the payload, and if a dash-family character is in there, the write is denied with an explanation before anything touches disk. Not a reminder. A wall.
+O tacape faz isso com o travessão. Um hook `PreToolUse` em `Write`, `Edit` e `NotebookEdit` percorre
+cada string do payload, e se houver um U+2014, a escrita é negada com uma explicação antes de
+qualquer coisa tocar o disco. Não é lembrete. É parede.
+
+O alvo é deliberadamente estreito: **só U+2014, só prosa e copy de UI.** A reclamação que o guard
+responde é que texto escrito por máquina tem cara de escrito por máquina, e o travessão é o traço mais
+forte disso. O escopo segue essa reclamação e para ali. O en dash U+2013 ficou de fora, porque é
+correto em intervalo numérico e não carrega nada desse traço. Arquivos que não são prosa são pulados
+inteiros: uma fixture de teste, um manifest JSON ou um parser que trata o caractere estão fazendo
+trabalho legítimo com ele, e um guard que mira em como o texto é LIDO não tem o que fazer em um
+arquivo que ninguém lê como texto.
 
 <details>
-<summary><strong>Three non-obvious things about building this</strong></summary>
+<summary><strong>Quatro coisas não óbvias sobre construir isso</strong></summary>
 
 <br>
 
-**The guard file cannot contain the character it bans.** It stores it as a `\u2014` escape, or it fails its own check the moment the repo-wide test runs.
+**O arquivo do guard não pode conter o caractere que ele bane.** Ele guarda o caractere como sequência
+de escape em vez de literal, senão falha na própria checagem assim que o teste do repositório roda.
 
-**The allow path must emit nothing.** The obvious implementation returns `permissionDecision: "allow"` when the payload is clean. That would auto-approve every single write in your session, which is a vastly worse bug than the one the hook fixes. Emitting nothing lets the call fall through to normal permission handling.
+**As três camadas precisam banir exatamente a mesma coisa.** O hook, o pre-commit e o invariante de CI
+começaram com três definições ligeiramente diferentes. Isso é três regras, não uma, e a mais frouxa
+ensina em silêncio a ignorar a mais rígida. Hoje compartilham um alvo só, e a suíte falha se elas
+divergirem.
 
-**One thing we got wrong and reverted.** Adding `Bash` to the matcher looked like closing a bypass, since `echo "x" > f.md` writes whatever it wants. It closed the remedy instead: a command string cannot distinguish writing the character from searching for it or deleting it, so `grep -rn "<char>" .` and `sed -i "s/<char>/,/g" f.md` both got denied. The two commands you most need in a repo that bans the character. A guard that blocks the fix is worse than no guard. Bash writes are caught one layer down now, by the pre-commit hook and CI, which look at the result instead of guessing at intent.
+**O caminho de permissão não pode emitir nada.** A implementação óbvia retorna
+`permissionDecision: "allow"` quando o payload está limpo. Isso aprovaria automaticamente toda escrita
+da sua sessão, um bug muito pior do que o que o hook corrige. Não emitir nada deixa a chamada cair no
+tratamento normal de permissão.
+
+**Uma coisa que erramos e revertemos.** Adicionar `Bash` ao matcher parecia fechar um bypass, já que
+`echo "x" > f.md` escreve o que quiser. Fechou o remédio. Uma string de comando não distingue escrever
+o caractere de procurar ou remover ele, então `grep -rn "<char>" .` e `sed -i "s/<char>/,/g" f.md`
+eram negados. Os dois comandos que você mais precisa em um repositório que bane o caractere. Um guard
+que bloqueia a correção é pior que nenhum guard. Escritas via Bash são pegas uma camada abaixo agora,
+pelo hook de pre-commit e pelo CI, que olham o resultado em vez de adivinhar intenção.
 
 </details>
 
 > [!NOTE]
-> **Scope, stated honestly.** This is not a filesystem-level guarantee. A write by a program the agent launches, a formatter or a codegen step or a shell redirect, is outside what a `PreToolUse` hook can see. The repo-wide invariant belongs in CI, which is where tacape checks its own.
+> **Escopo, dito com honestidade.** Isso não é garantia em nível de sistema de arquivos. Uma escrita
+> feita por um programa que o agente dispara, um formatter ou um passo de codegen ou um redirect de
+> shell, está fora do que um hook `PreToolUse` enxerga. O invariante do repositório inteiro pertence ao
+> CI, que é onde o tacape checa o dele.
 
-Escape hatch, for a repo that legitimately needs the character:
+Escape hatch, para um repositório que legitimamente precisa do caractere:
 
 ```bash
 TACAPE_ALLOW_EMDASH=1 claude
 ```
 
-The guard is independent of the style level. `/tacape:tacape off` does not disable it.
+O guard é independente do nível de estilo. `/tacape:tacape off` não desliga ele.
 
-## Levels
+## Níveis
 
-| Level | Same sentence, shrunk |
+| Nível | Mesma frase, encolhida |
 |---|---|
-| *no plugin* | You should wrap the object in `useMemo`, since a new reference is created on every render. |
-| `lite` | Wrap the object in `useMemo`. A new reference is created every render. |
-| `full` *(default)* | New ref each render. Wrap object in `useMemo`. |
-| `ultra` | New ref per render. `useMemo` it. |
-| `off` | Style layer off. Guard stays on. |
+| *sem plugin* | Você deveria envolver o objeto em `useMemo`, já que uma nova referência é criada a cada render. |
+| `lite` | Envolva o objeto em `useMemo`. Uma nova referência é criada a cada render. |
+| `full` *(padrão)* | Nova ref a cada render. Envolva o objeto em `useMemo`. |
+| `ultra` | Nova ref por render. `useMemo` nele. |
+| `off` | Camada de estilo desligada. Guard continua ligado. |
 
 ```
-/tacape:tacape          show the current level
-/tacape:tacape ultra    switch
-/tacape:tacape off      disable the style layer
+/tacape:tacape          mostra o nível atual
+/tacape:tacape ultra    troca
+/tacape:tacape off      desliga a camada de estilo
 ```
 
-Persists in `~/.claude/.tacape-mode`. `TACAPE_LEVEL=ultra` overrides for one session without changing your default.
+Persiste em `~/.claude/.tacape-mode`. `TACAPE_LEVEL=ultra` sobrescreve por uma sessão sem mudar seu
+padrão.
 
-**It stands down on its own** for security warnings, irreversible actions, and any sequence where dropped words would make the order ambiguous. Safety beats brevity, always. It also stands down when you ask it to explain something: then it runs as long as the topic needs, still with no preamble and no closer. A brevity plugin that makes an agent terse about `rm -rf` is a liability, not a feature.
+**Ele recua sozinho** em avisos de segurança, ações irreversíveis, e qualquer sequência onde palavras
+omitidas deixariam a ordem ambígua. Segurança ganha de brevidade, sempre. Também recua quando você
+pede para explicar algo: aí ele roda o quanto o assunto exigir, ainda sem preâmbulo e sem fechamento.
+Um plugin de brevidade que deixa um agente conciso sobre `rm -rf` é um passivo, não uma feature.
 
 ## Statusline
 
-Optional, Claude Code only.
+Opcional, só no Claude Code.
 
 ```
 [TACAPE:FULL] ~/dev/tacape (main*) Opus 4.8
 ```
 
-Level, directory, branch with a dirty marker, model. Not wired automatically, because overwriting a statusline you already built would be rude. tacape offers once, on a session where none is configured. Setup in [INSTALL.md](./INSTALL.md).
+Nível, diretório, branch com marcador de sujeira, modelo. Não é ligado automaticamente, porque
+sobrescrever uma statusline que você já montou seria grosseria. O tacape oferece uma vez, numa sessão
+onde nenhuma está configurada. Setup no [INSTALL.md](./INSTALL.md).
 
-Pure bash, no node and no jq, since it runs on every refresh. It refuses to read the level from a symlink, caps the read, and strips control bytes, because a statusline writes straight into your terminal and a planted file would otherwise inject ANSI escape sequences on every refresh.
+Bash puro, sem node e sem jq, já que roda a cada refresh. Ele se recusa a ler o nível de um symlink,
+limita o tamanho da leitura e remove bytes de controle, porque uma statusline escreve direto no seu
+terminal e um arquivo plantado injetaria sequências ANSI a cada refresh.
 
-## Honest numbers
+## Números honestos
 
-**tacape does not report tokens saved, and that is deliberate.**
+**O tacape não reporta tokens economizados, e isso é deliberado.**
 
-Every "X% saved" number in this category is an estimate against a counterfactual nobody observed. You cannot know what the agent *would* have said without the plugin, because it did not say it. You can estimate, and the estimates are not worthless, but they are estimates wearing the costume of a measurement.
+Todo número de "X% economizado" nesta categoria é uma estimativa contra um contrafactual que ninguém
+observou. Você não tem como saber o que o agente *teria* dito sem o plugin, porque ele não disse. Dá
+para estimar, e as estimativas não são inúteis, mas são estimativas fantasiadas de medição.
 
-What can be said honestly, without a number:
+O que dá para dizer com honestidade, sem número:
 
-- **Output tokens go down.** Obviously. That is what layer 1 does.
-- **Input tokens go up slightly.** The ruleset is injected at `SessionStart`. It is not free.
-- **On already-terse workloads the net can go negative.** If your prompts are one-liners and the answers are three words, you are paying the ruleset cost for compression you did not need.
-- **The real win is not money.** It is that you can find the answer, and that the code coming back has fewer of the specific defects layer 3 targets. Cost is a side effect.
+- **Tokens de saída caem.** Obviamente. É o que a camada 1 faz.
+- **Tokens de entrada sobem um pouco.** O conjunto de regras é injetado no `SessionStart`. Não é de graça.
+- **Em workloads já concisos o saldo pode ficar negativo.** Se seus prompts são de uma linha e as respostas têm três palavras, você está pagando o custo do ruleset por uma compressão de que não precisava.
+- **O ganho real não é dinheiro.** É que você acha a resposta, e que o código que volta tem menos dos defeitos específicos que a camada 3 mira. Custo é efeito colateral.
 
-An earlier version of this README carried an attribution table crediting eleven essays for ideas only partly in the file. An audit caught it. The lesson generalizes: this project would rather ship no number than a flattering one. If a measured A/B eval lands later, the number goes here with the harness next to it.
+Uma versão anterior deste README trazia uma tabela de atribuição creditando onze ensaios por ideias
+que estavam só parcialmente no arquivo. Uma auditoria pegou. A lição generaliza: este projeto prefere
+não entregar número nenhum a entregar um número lisonjeiro. Se um eval A/B medido aparecer depois, o
+número vem para cá com o harness do lado.
 
-## Where the principles come from
+## De onde vêm os princípios
 
-Two lineages, and it is worth being precise about which is which.
+Duas linhagens, e vale ser preciso sobre qual é qual.
 
-**The immediate source is production incidents.** Most of these rules were written the week after something broke. "A caught error on a retried path must reach the alerting system" is here because a payment webhook logged its failures and returned success, so the gateway stopped retrying and nothing paged, and the path stayed dead for two days while every dashboard read green. "Verify a boundary rule with a negative probe" is here because a lint config that looked correct was silently enforcing nothing. That is why the rules are phrased as consequences and not as preferences.
+**A fonte imediata são incidentes de produção.** A maior parte destas regras foi escrita na semana
+seguinte a algo quebrar. "Um erro capturado em um caminho com retry precisa chegar ao sistema de
+alerta" está aqui porque um webhook de pagamento logava as falhas e retornava sucesso, então o gateway
+parou de tentar de novo e nada alertou, e o caminho ficou morto por dois dias enquanto todo dashboard
+aparecia verde. "Verifique uma regra de fronteira com uma sonda negativa" está aqui porque um config
+de lint que parecia correto não estava aplicando nada em silêncio. É por isso que as regras estão
+escritas como consequências e não como preferências.
 
-**The ideas underneath are not original.** Each of these named the thing long before it appeared here:
+**As ideias por baixo não são originais.** Cada uma destas nomeou a coisa muito antes de ela aparecer
+aqui:
 
-| Idea | Source | Rule |
+| Ideia | Fonte | Regra |
 |---|---|:---:|
-| Duplication is far cheaper than the wrong abstraction | Sandi Metz, [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) (2016) | 2 |
-| Complexity is the enemy, resist the complexity demon | Carson Gross, [The Grug Brained Developer](https://grugbrain.dev/) (2022) | 1 |
-| Innovation tokens: spend novelty where it is the product | Dan McKinley, [Choose Boring Technology](https://mcfunley.com/choose-boring-technology) (2015) | 2 |
-| Deep modules, push complexity down, define errors out of existence | John Ousterhout, A Philosophy of Software Design (2018) | 3 |
-| Optimize for deletion, layer by expected lifetime | tef, [Write code that is easy to delete](https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to) (2016) | 4 |
-| Dependencies point one direction, inward | Robert C. Martin, the Dependency Rule | 5 |
-| Pure decision logic first, effects at the shell | Gary Bernhardt, Functional Core / Imperative Shell (2012) | 6, 7 |
-| Parse untrusted input once, at the edge, into a type that cannot be wrong | Alexis King, [Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) (2019) | 7 |
-| Make illegal states unrepresentable | Yaron Minsky, Jane Street, from the OCaml tradition | 7 |
-| Deterministic, isolated, fast, behavior over implementation | Kent Beck, Test Desiderata (2019) | 9 |
-| The rule of three, and YAGNI | Martin Fowler, Refactoring, crediting Don Roberts | 2 |
+| Duplicação é bem mais barata que a abstração errada | Sandi Metz, [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) (2016) | 2 |
+| Complexidade é a inimiga, resista ao demônio da complexidade | Carson Gross, [The Grug Brained Developer](https://grugbrain.dev/) (2022) | 1 |
+| Fichas de inovação: gaste novidade onde ela é o produto | Dan McKinley, [Choose Boring Technology](https://mcfunley.com/choose-boring-technology) (2015) | 2 |
+| Módulos profundos, empurre complexidade para baixo, defina erros para fora de existência | John Ousterhout, A Philosophy of Software Design (2018) | 3 |
+| Otimize para deleção, separe camadas por tempo de vida | tef, [Write code that is easy to delete](https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to) (2016) | 4 |
+| Dependências apontam em uma direção, para dentro | Robert C. Martin, a Dependency Rule | 5 |
+| Lógica de decisão pura primeiro, efeitos na casca | Gary Bernhardt, Functional Core / Imperative Shell (2012) | 6, 7 |
+| Faça parse de entrada não confiável uma vez, na borda, para um tipo que não consegue estar errado | Alexis King, [Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) (2019) | 7 |
+| Torne estados ilegais irrepresentáveis | Yaron Minsky, Jane Street, da tradição OCaml | 7 |
+| Determinístico, isolado, rápido, comportamento acima de implementação | Kent Beck, Test Desiderata (2019) | 9 |
+| A regra de três, e YAGNI | Martin Fowler, Refactoring, creditando Don Roberts | 2 |
 
-Every row names the rule carrying it. If a row ever stops tracing to a rule, the row gets deleted rather than keeping the borrowed authority.
+Cada linha nomeia a regra que a carrega. Se uma linha algum dia deixar de rastrear até uma regra, a
+linha é deletada em vez de manter a autoridade emprestada.
 
-What tacape adds is not a new idea. It is that an agent applies these by default, on every diff, without you remembering to ask. Reading the essays changes what you believe. A skill file changes what gets written at 2am.
+O que o tacape acrescenta não é uma ideia nova. É que um agente aplica isso por padrão, em todo diff,
+sem você lembrar de pedir. Ler os ensaios muda o que você acredita. Um arquivo de skill muda o que é
+escrito às 2 da manhã.
 
-## Inspiration
+## Inspiração
 
-Two plugins solved half the problem each, and tacape owes both.
+Dois plugins resolveram metade do problema cada um, e o tacape deve aos dois.
 
-**[caveman](https://github.com/JuliusBrussee/caveman)** by Julius Brussee is layer 1. It proved an agent can drop most of its words without losing any technical substance, and, importantly, that the ruleset has to be re-injected every session or the model drifts back to verbose. That single observation is the seed of the entire tool-layer argument above.
+**[caveman](https://github.com/JuliusBrussee/caveman)** de Julius Brussee é a camada 1. Ele provou que
+um agente pode cortar a maior parte das palavras sem perder nada de substância técnica, e, importante,
+que o ruleset precisa ser reinjetado a cada sessão ou o modelo volta a ser verboso. Essa única
+observação é a semente de todo o argumento da camada de ferramentas acima.
 
-**[i-have-adhd](https://github.com/ayghri/i-have-adhd)** by ayghri is layer 2. Its argument is that brevity alone is not enough: working memory is small, starting is the hardest step, and a buried answer does not register. Lead with the action, number the steps, end with one thing to do.
+**[i-have-adhd](https://github.com/ayghri/i-have-adhd)** de ayghri é a camada 2. O argumento dele é
+que brevidade sozinha não basta: memória de trabalho é pequena, começar é o passo mais difícil, e uma
+resposta enterrada não registra. Comece pela ação, numere os passos, termine com uma coisa a fazer.
 
-They are orthogonal, compression is about how words look and structure is about where things go, but running both as separate always-on plugins means two style prompts competing for the same job. tacape merges them into one ruleset and adds what neither has: the enforced ban and the engineering principles.
+Eles são ortogonais, compressão é sobre como as palavras aparecem e estrutura é sobre onde as coisas
+ficam, mas rodar os dois como plugins separados sempre ativos significa dois prompts de estilo
+competindo pelo mesmo trabalho. O tacape funde os dois em um ruleset só e acrescenta o que nenhum tem:
+o banimento aplicado por ferramenta e os princípios de engenharia.
 
 ## Skills
 
-| Skill | Fires on |
+| Skill | Dispara em |
 |---|---|
-| `tacape` | Always, via `SessionStart`. Compression and structure. |
-| `tacape-code` | Writing, refactoring or reviewing code in any language. |
-| `tacape-commit` | "write a commit". Conventional Commits, 50 char subject, body only when the diff cannot answer why. |
-| `tacape-review` | "review this diff". One line per finding, severity ranked, capped at 8 and never silently truncated. |
+| `tacape` | Sempre, via `SessionStart`. Compressão e estrutura. |
+| `tacape-code` | Escrever, refatorar ou revisar código em qualquer linguagem. |
+| `tacape-commit` | "escreva um commit". Conventional Commits, assunto de 50 caracteres, corpo só quando o diff não responde o porquê. |
+| `tacape-review` | "revise este diff". Uma linha por achado, ordenado por severidade, limitado a 8 e nunca truncado em silêncio. |
 
-## Development
+## Desenvolvimento
 
 ```bash
-bash tests/run.sh                  # 46 assertions, no framework, no dependencies
-bash hooks/install-git-hooks.sh    # pre-commit guard against the banned characters
+bash tests/run.sh                  # 48 asserções, sem framework, sem dependência
+bash hooks/install-git-hooks.sh    # guard de pre-commit contra o caractere banido
 ```
 
-CI runs the same file on every push. The suite covers the hooks against adversarial input, the manifests, and assertions that fail when `AGENTS.md` and `skills/tacape/SKILL.md` drift apart, since those are two hand-maintained copies of one ruleset.
+O CI roda o mesmo arquivo a cada push. A suíte cobre os hooks contra entrada adversarial, os
+manifests, e asserções que falham quando `AGENTS.md` e `skills/tacape/SKILL.md` divergem, já que são
+duas cópias mantidas à mão de um ruleset só.
 
-This exists because the principles in this repo demand tests and tool-enforced rules, and for the first three commits tacape had neither. An audit pointed that out, correctly, as the finding that undercut everything else it claims. A plugin arguing that prompt rules decay and belong in the tool layer has to hold its own rules in the tool layer too, or it is a blog post with a manifest.
+Isto existe porque os princípios deste repositório exigem testes e regras aplicadas por ferramenta, e
+nos três primeiros commits o tacape não tinha nenhum dos dois. Uma auditoria apontou isso,
+corretamente, como o achado que derrubava todo o resto que ele afirma. Um plugin que argumenta que
+regras de prompt decaem e pertencem à camada de ferramentas precisa manter as próprias regras na
+camada de ferramentas também, ou é um post de blog com um manifest.
 
-## Compare instruction styles
+## Compare estilos de instrução
 
-Run OpenAI benchmark against neutral, Caveman, i-have-adhd and tacape instructions:
+Rode o benchmark da OpenAI contra instruções neutras, Caveman, i-have-adhd e tacape:
 
 ```bash
 python3 benchmarks/run-openai.py --dry-run
 OPENAI_API_KEY=... python3 benchmarks/run-openai.py
 ```
 
-Same prompts, same model, fixed request shape, repeated trials, median output tokens. Benchmark
-reports data for this prompt set. It does not claim universal superiority.
+Mesmos prompts, mesmo modelo, formato de requisição fixo, trials repetidos, mediana de tokens de
+saída. O benchmark reporta dados para este conjunto de prompts. Ele não afirma superioridade
+universal.
 
-## What it deliberately does not do
+## O que ele deliberadamente não faz
 
-No runtime token accounting. No subagents. No statusline wired without asking. It shapes output
-and encodes principles, nothing more.
-## License
+Sem contabilidade de token em runtime. Sem subagentes. Sem statusline ligada sem perguntar. Ele molda
+saída e codifica princípios, nada além disso.
+
+## Licença
 
 MIT.
