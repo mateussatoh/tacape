@@ -3,6 +3,10 @@
 </p>
 
 <p align="center">
+  <img src="./tacape-banner.png" width="474" height="281" alt="Tacape banner: Tacape bonks Cloud, OpenAI, and Gemini verbosity">
+</p>
+
+<p align="center">
   <em>A tacape is a wooden war club. Blunt, short, ends the conversation.</em>
 </p>
 

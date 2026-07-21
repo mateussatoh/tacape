@@ -1,7 +1,7 @@
 {
   "name": "tacape",
   "description": "Compressed, action-first output plus language-agnostic engineering principles. Cuts filler, leads with the next action, hard-blocks the em dash at write time.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": {
     "name": "Mateus Satoh",
     "url": "https://github.com/mateussatoh"

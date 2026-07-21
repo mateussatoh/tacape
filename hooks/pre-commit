@@ -11,7 +11,9 @@ STAGED=$(git diff --cached --name-only --diff-filter=ACM)
 FOUND=""
 while IFS= read -r f; do
   [ -f "$f" ] || continue
-  if grep -lP '\x{2013}|\x{2014}|\x{2015}' "$f" >/dev/null 2>&1; then
+  # -I skips binary files. Their bytes match the pattern by coincidence and
+  # there is no prose in them to fix, so a hit is always a false positive.
+  if grep -lIP '\x{2013}|\x{2014}|\x{2015}' "$f" >/dev/null 2>&1; then
     FOUND="$FOUND  $f"$'\n'
   fi
 done <<< "$STAGED"

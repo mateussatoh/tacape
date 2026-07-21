@@ -43,7 +43,9 @@ EN=$(printf '\u2013')
 # ---------------------------------------------------------------------------
 group 'repo invariant'
 
-HITS=$(grep -rlP '\x{2013}|\x{2014}|\x{2015}' . --exclude-dir=.git 2>/dev/null)
+# -I skips binary files. A PNG's bytes match the pattern by coincidence, and a
+# binary has no prose to fix, so a hit there is always a false positive.
+HITS=$(grep -rlIP '\x{2013}|\x{2014}|\x{2015}' . --exclude-dir=.git 2>/dev/null)
 assert_empty 'no dash-family character anywhere in the repo' "$HITS"
 
 for f in .claude-plugin/plugin.json .claude-plugin/marketplace.json \
