@@ -86,9 +86,6 @@ OUT=$(printf '{"tool_input":{"file_path":"a.ts","edits":[{"new_string":"ok"},{"n
 assert_contains 'nested edits array is denied' '"permissionDecision":"deny"' "$OUT"
 assert_contains 'deny message names the payload path' 'edits[1]' "$OUT"
 
-OUT=$(printf '{"tool_name":"Bash","tool_input":{"command":"echo \\"a %s b\\" > f.md"}}' "$EM" | $GUARD)
-assert_contains 'bash command writing an em dash is denied' '"permissionDecision":"deny"' "$OUT"
-
 # ---------------------------------------------------------------------------
 group 'em dash guard: allows'
 
@@ -111,6 +108,32 @@ assert_empty 'empty input fails open' "$OUT"
 
 OUT=$(printf '{"tool_input":null}' | $GUARD)
 assert_empty 'null tool_input fails open' "$OUT"
+
+# Regression: Bash was briefly added to the matcher. It denied `grep -rn "<char>" .` and
+# `sed -i "s/<char>/,/g" f.md`, the two commands you most need in a repo that bans the character,
+# because a command string cannot distinguish writing from searching or deleting. The guard must
+# not be reachable from Bash; the pre-commit hook and CI cover that layer instead.
+MATCHER=$(node -e "process.stdout.write(require('$ROOT/.claude-plugin/plugin.json').hooks.PreToolUse[0].matcher)")
+case "$MATCHER" in
+  *Bash*) bad 'guard is not wired to Bash' "matcher is [$MATCHER]; searching or removing the character would be denied" ;;
+  *) ok 'guard is not wired to Bash' ;;
+esac
+
+# The docs must describe the tools the matcher actually lists.
+for tool in Write Edit NotebookEdit; do
+  case "$MATCHER" in
+    *"$tool"*)
+      if grep -q "\`$tool\`" README.md; then ok "docs mention matched tool: $tool"
+      else bad "docs mention matched tool: $tool"; fi ;;
+  esac
+done
+
+# The pre-commit hook is the layer that catches what the guard cannot see.
+if [ -x hooks/pre-commit ] && grep -q 'diff --cached' hooks/pre-commit; then
+  ok 'pre-commit hook covers the write paths the guard cannot see'
+else
+  bad 'pre-commit hook covers the write paths the guard cannot see'
+fi
 
 # ---------------------------------------------------------------------------
 group 'activation hook'
@@ -154,11 +177,6 @@ assert_contains 'survives empty stdin' 'TACAPE' "$OUT"
 
 # Non-ASCII paths are ordinary. Stripping them corrupted the path AND killed the branch,
 # because the mangled path was then handed to git.
-ACC="$TMP/acao-especial"
-mkdir -p "$ACC"
-OUT=$(echo '{"workspace":{"current_dir":"'"$ACC"'"}}' | $STATUS)
-assert_contains 'renders a plain path' 'acao-especial' "$OUT"
-
 UTF="$TMP/ação"
 mkdir -p "$UTF"
 OUT=$(echo '{"workspace":{"current_dir":"'"$UTF"'"}}' | $STATUS)

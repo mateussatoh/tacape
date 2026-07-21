@@ -1,6 +1,6 @@
 {
   "name": "tacape",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Compressed, action-first output plus language-agnostic engineering principles. Bans the em dash.",
   "author": {
     "name": "Mateus Satoh",

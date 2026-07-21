@@ -4,10 +4,16 @@
 // A prompt rule is advisory and decays over a long session. This does not, and it also catches a
 // character arriving from a paste or a generated template, which no prompt rule can.
 //
-// SCOPE, stated honestly: this covers Write, Edit, NotebookEdit and Bash. It is not a
-// filesystem-level guarantee. A write performed by a program the agent launches (a formatter, a
-// codegen step, a script) is outside what a PreToolUse hook can observe. The repo-wide invariant
-// belongs in CI, which is where tacape checks its own.
+// SCOPE, stated honestly: this covers Write, Edit and NotebookEdit. It is not a filesystem-level
+// guarantee. A write by a program the agent launches (a formatter, a codegen step, a shell
+// redirect) is outside what this can observe.
+//
+// Bash was deliberately REMOVED from the matcher after being added. Matching the character in a
+// command string cannot distinguish writing it from searching for it or deleting it, so it denied
+// `grep -rn "<char>" .` and `sed -i "s/<char>/,/g" f.md`: the two commands you most need in a repo
+// that bans the character. A guard that blocks the fix is worse than no guard. Bash writes are
+// caught at the next layer instead, by hooks/pre-commit and by CI, which see the result rather
+// than the intent and therefore have no false positives.
 //
 // Escape hatch: TACAPE_ALLOW_EMDASH=1, for a repo that legitimately needs these characters,
 // such as one quoting a source verbatim.
