@@ -1,0 +1,40 @@
+{
+  "name": "tacape",
+  "description": "Compressed, action-first output plus language-agnostic engineering principles. Cuts filler, leads with the next action, hard-blocks the em dash at write time.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Mateus Satoh",
+    "url": "https://github.com/mateussatoh"
+  },
+  "homepage": "https://github.com/mateussatoh/tacape",
+  "repository": "https://github.com/mateussatoh/tacape",
+  "license": "MIT",
+  "keywords": ["productivity", "brevity", "adhd", "code-style", "code-review"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tacape-activate.js\"",
+            "timeout": 5,
+            "statusMessage": "Loading tacape..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/tacape-emdash-guard.js\"",
+            "timeout": 5,
+            "statusMessage": "Checking for em dash..."
+          }
+        ]
+      }
+    ]
+  }
+}
