@@ -73,4 +73,25 @@ const filtered = body.split('\n').filter((line) => {
   return true;
 });
 
-process.stdout.write('TACAPE ACTIVE - level: ' + level + '\n\n' + filtered.join('\n'));
+let output = 'TACAPE ACTIVE - level: ' + level + '\n\n' + filtered.join('\n');
+
+// Offer the statusline once, when no statusline is configured at all.
+// Never overwrite an existing one: the user may have built their own.
+try {
+  const settingsPath = path.join(claudeDir, 'settings.json');
+  const settings = fs.existsSync(settingsPath)
+    ? JSON.parse(fs.readFileSync(settingsPath, 'utf8'))
+    : {};
+
+  if (!settings.statusLine) {
+    const script = path.join(__dirname, 'tacape-statusline.sh');
+    const command = 'bash "' + script + '"';
+    output +=
+      '\n\nSTATUSLINE AVAILABLE: tacape ships a statusline showing the active level, the ' +
+      'directory, the git branch and the model. No statusline is configured yet. To enable it, ' +
+      'add this to ' + settingsPath + ': "statusLine": { "type": "command", "command": ' +
+      JSON.stringify(command) + ' }. Offer this to the user once, then drop it.';
+  }
+} catch (e) { /* never block session start over the statusline */ }
+
+process.stdout.write(output);

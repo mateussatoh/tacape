@@ -119,6 +119,34 @@ echo "bytes: ${#out}"
 In the session itself: `/tacape` should answer with the current level, and asking the agent to
 write a file containing an em dash should be blocked with an explanation.
 
+## Statusline (Claude Code, optional)
+
+```
+[TACAPE:FULL] ~/dev/tacape (main*) Opus 4.8
+```
+
+Add to your settings file, pointing at wherever tacape lives:
+
+```json
+"statusLine": {
+  "type": "command",
+  "command": "bash \"/path/to/tacape/hooks/tacape-statusline.sh\""
+}
+```
+
+Prefer a stable path such as a git clone over the plugin cache, since the cache path carries the
+version number and changes on every upgrade.
+
+Test it without restarting:
+
+```bash
+echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"'"$PWD"'"}}' \
+  | bash /path/to/tacape/hooks/tacape-statusline.sh
+```
+
+tacape never wires this for you and never replaces an existing statusline. It offers once, on a
+session where none is configured.
+
 ## Turn it off
 
 ```

@@ -11,6 +11,12 @@ description: >
 
 Principles, not rules for a stack. They hold in any language and any framework.
 
+Most were extracted from production incidents. The ideas underneath belong to the people who named
+them first: Sandi Metz on the wrong abstraction, Carson Gross on complexity, tef on writing code
+that is easy to delete, Alexis King on parsing at the edge, Gary Bernhardt on separating decisions
+from effects, Ousterhout on interface depth, Fowler on the rule of three. See the README for the
+full attribution table.
+
 Precedence: the repo's own `CLAUDE.md` / `AGENTS.md` > the conventions already visible in the
 surrounding code > this skill. Never impose these over a codebase that consistently does otherwise.
 

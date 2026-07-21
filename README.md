@@ -223,6 +223,29 @@ dropped words would make the order ambiguous. Safety beats brevity, always. It a
 when you ask it to explain something: then it runs as long as the topic needs, still with no
 preamble and no closer.
 
+## Statusline
+
+Optional, Claude Code only. Shows the active level, the directory, the git branch with a dirty
+marker, and the model.
+
+```
+[TACAPE:FULL] ~/dev/tacape (main*) Opus 4.8
+```
+
+It is not wired automatically, because overwriting a statusline you already built would be rude.
+On first session with no statusline configured, tacape offers to set it up. Or add it yourself:
+
+```json
+"statusLine": {
+  "type": "command",
+  "command": "bash \"/path/to/tacape/hooks/tacape-statusline.sh\""
+}
+```
+
+Pure bash, no node and no jq, since it runs on every refresh. It refuses to read the level from a
+symlink, caps the read, and strips everything outside `[a-z]`, because a statusline renders
+straight into your terminal and a planted file could otherwise inject ANSI escape sequences.
+
 ## Skills
 
 | Skill | Fires on |
@@ -232,9 +255,42 @@ preamble and no closer.
 | `tacape-commit` | "write a commit", `/tacape-commit`. Conventional Commits, 50 char subject, body only when the diff cannot answer why. |
 | `tacape-review` | "review this diff", `/tacape-review`. One line per finding, severity ranked, capped at 8 and never silently truncated. |
 
+## Where the principles come from
+
+Two different lineages, and it is worth being precise about which is which.
+
+**The immediate source is production incidents.** Most of these rules were extracted from real
+codebases, and most of them were written the week after something broke. "A caught error on a
+retried path must reach the alerting system" is in here because a payment webhook logged its
+failures and returned success, so the gateway stopped retrying and nothing paged, and the path
+stayed dead for two days while every dashboard read green. "Verify a boundary rule with a negative
+probe" is in here because a lint config that looked correct was silently enforcing nothing. That is
+why the rules are phrased as consequences rather than as style preferences.
+
+**The ideas underneath are not original, and the people who articulated them deserve the credit.**
+Each of these named the thing long before it showed up as a rule here:
+
+| Idea | Source |
+|---|---|
+| Duplication is far cheaper than the wrong abstraction | Sandi Metz, [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) (2016) |
+| Complexity is the enemy, boring wins, resist the demon spirit of complexity | Carson Gross, [The Grug Brained Developer](https://grugbrain.dev/) (2022) |
+| Optimize for deletion, not extension. Layer so the hard parts are isolated | tef, [Write code that is easy to delete, not easy to extend](https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to) (2016) |
+| Parse untrusted input once, at the edge, into a type that cannot be wrong | Alexis King, [Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) (2019) |
+| Make illegal states unrepresentable | Yaron Minsky, Jane Street, from the OCaml tradition |
+| Pure decision logic first, effects at the shell | Gary Bernhardt, Functional Core / Imperative Shell, Destroy All Software (2012) |
+| The rule of three, and YAGNI | Martin Fowler, Refactoring, crediting Don Roberts |
+| Dependencies point one direction, inward | Robert C. Martin, the Dependency Rule, Clean Architecture |
+| Complexity is incremental, and interfaces should be deeper than they are wide | John Ousterhout, A Philosophy of Software Design (2018) |
+| Prefer the boring, well-understood option | Dan McKinley, [Choose Boring Technology](https://mcfunley.com/choose-boring-technology) (2015) |
+| Tests should be about behavior, fast, and give confidence rather than coverage | Kent Beck, Test Desiderata (2019) |
+
+What tacape adds is not a new idea. It is that an agent applies these by default, on every diff,
+without you having to remember to ask. Reading the essays changes what you believe. A skill file
+changes what actually gets written at 2am.
+
 ## Inspiration
 
-tacape stands on two plugins that each solved one half of the problem.
+On the output side, tacape stands on two plugins that each solved one half of the problem.
 
 **[caveman](https://github.com/JuliusBrussee/caveman)** by Julius Brussee gave it the compression
 layer. It proved an agent can drop most of its words without losing any technical substance, and
