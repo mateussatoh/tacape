@@ -56,7 +56,7 @@ extract() {
     | grep -o "\"$1\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" \
     | head -1 \
     | sed 's/.*:[[:space:]]*"//; s/"$//' \
-    | tr -cd '[:print:]'
+    | tr -d '\000-\037\177'
 }
 
 CWD=$(extract 'current_dir')
@@ -70,9 +70,16 @@ MODEL=$(extract 'display_name')
 BRANCH=""
 if command -v git >/dev/null 2>&1; then
   B=$(git -C "$CWD" rev-parse --abbrev-ref HEAD 2>/dev/null)
+  # A detached HEAD and a fresh repo with no commits both report the literal "HEAD".
+  # Show the short sha instead, which is what the user can act on.
+  if [ "$B" = "HEAD" ]; then
+    B=$(git -C "$CWD" rev-parse --short HEAD 2>/dev/null || printf 'no commits')
+  fi
   if [ -n "$B" ]; then
+    # status --porcelain also catches untracked files, which `diff HEAD` misses, and it does
+    # not error on a repo with zero commits the way `diff HEAD` does.
     DIRTY=""
-    git -C "$CWD" diff --quiet --ignore-submodules HEAD 2>/dev/null || DIRTY="*"
+    [ -n "$(git -C "$CWD" status --porcelain 2>/dev/null | head -1)" ] && DIRTY="*"
     BRANCH=$(printf ' \033[38;5;66m(%s%s)\033[0m' "$B" "$DIRTY")
   fi
 fi

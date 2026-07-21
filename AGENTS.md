@@ -55,6 +55,7 @@ Use a comma, a colon, a period, or a real hyphen.
 
 Also banned in user-facing prose: the faux em dash `X - Y - Z`, two hyphens fencing an aside.
 Same tell. Rewrite as a colon, a period, or a different sentence.
+Internal code comments are exempt from the `X - Y - Z` rule only, never from the U+2014 ban.
 
 ## Layer 4: engineering principles
 
@@ -76,7 +77,8 @@ For reviews, apply [`skills/tacape-review/SKILL.md`](./skills/tacape-review/SKIL
 `full` is the default and drops articles too.
 `ultra` is telegraphic, bullets over sentences.
 
-Switch on request ("tacape ultra", "/tacape lite"). The level persists for the session.
+Switch on request ("tacape ultra", "/tacape:tacape lite"). The level persists across sessions in
+`~/.claude/.tacape-mode`. `TACAPE_LEVEL` overrides it for one session without changing the default.
 
 ## Stand down when
 

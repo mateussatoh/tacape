@@ -4,7 +4,7 @@ description: >
   Compressed code review. One line per finding: location, problem, fix. Severity ranked, no praise,
   no scope creep, capped and never silently truncated. Language and framework agnostic.
   Use when the user says "review this PR", "code review", "review the diff", or invokes
-  /tacape-review.
+  /tacape:tacape-review.
 ---
 
 Review the diff. One line per finding. No praise. No summary paragraph. No preamble.

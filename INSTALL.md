@@ -9,11 +9,17 @@ tacape ships in three shapes so it works on any agent:
 | Gemini extension | `gemini-extension.json` | Gemini CLI. Context file. |
 | Plain instruction file | `AGENTS.md` | Everything else. Cursor, Windsurf, Cline, Copilot, Aider, Zed, OpenCode, and any agent that reads an instruction file. |
 
-`AGENTS.md` is the canonical portable ruleset. `CLAUDE.md` and `GEMINI.md` are one-line pointers to
-it, so there is exactly one copy of the rules and no drift.
+`AGENTS.md` is the portable ruleset for agents with no plugin system. `CLAUDE.md` and `GEMINI.md`
+are one-line pointers to it.
 
-Only Claude Code gets the write-time em dash guard, because only it exposes a pre-tool hook.
-Everywhere else the ban is a rule in `AGENTS.md`, which is advisory.
+`AGENTS.md` and `skills/tacape/SKILL.md` are two hand-maintained copies of the same rules, because
+the plugin reads the skill at runtime and other agents cannot. They are kept in step by assertions
+in `tests/run.sh` that fail the build when a rule is present in one and missing from the other.
+That is a weaker guarantee than generating one from the other, and it is the honest description of
+what is there. Change a rule in one, change it in the other, in the same commit.
+
+Only the Claude Code plugin currently ships the write-time guard. Everywhere else the ban is a rule
+in `AGENTS.md`, which is advisory.
 
 ---
 
@@ -26,7 +32,7 @@ claude plugin install tacape@tacape
 
 Restart the session. Hooks load at `SessionStart`.
 
-You get: the style layer always on, four skills, `/tacape` to switch levels, and the em dash guard
+You get: the style layer always on, four skills, `/tacape:tacape` to switch levels, and the em dash guard
 on every `Write`, `Edit` and `NotebookEdit`.
 
 > Do not run tacape alongside another always-on output-style plugin. Two `SessionStart` hooks
@@ -38,7 +44,11 @@ on every `Write`, `Edit` and `NotebookEdit`.
 
 ```bash
 codex plugin marketplace add mateussatoh/tacape --ref main
+codex plugin add tacape@tacape
 ```
+
+The first line only registers the marketplace. Without the second, `codex plugin list` shows
+`tacape@tacape  not installed`.
 
 Or drop `AGENTS.md` at the root of your project, which Codex reads natively.
 
@@ -116,7 +126,7 @@ echo "bytes: ${#out}"
 # expect: bytes: 0
 ```
 
-In the session itself: `/tacape` should answer with the current level, and asking the agent to
+In the session itself: `/tacape:tacape` should answer with the current level, and asking the agent to
 write a file containing an em dash should be blocked with an explanation.
 
 ## Statusline (Claude Code, optional)
@@ -150,7 +160,7 @@ session where none is configured.
 ## Turn it off
 
 ```
-/tacape off        style layer off, guard stays on
+/tacape:tacape off        style layer off, guard stays on
 "stop tacape"      same, for one session
 ```
 

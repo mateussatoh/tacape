@@ -48,6 +48,7 @@ Restart the session. Hooks load at `SessionStart`.
 
 ```bash
 codex plugin marketplace add mateussatoh/tacape --ref main
+codex plugin add tacape@tacape
 ```
 
 **Gemini CLI**
@@ -121,8 +122,31 @@ compression layer just saved.
 
 ## The engineering principles
 
-This is the part that makes tacape more than a style plugin. Thirteen sections, no framework, no
-language, no stack assumptions. The short version:
+This is the part that makes tacape more than a style plugin. Fifteen sections, no framework, no
+language, no stack assumptions.
+
+**What it changes, concretely.** Same task, an agent with the principles loaded and without:
+
+> ```diff
+> - export function getUser(raw: unknown) {
+> -   if (!isValid(raw)) throw new Error('bad')      // validated, then forgotten
+> -   const u = raw as User                          // the cast is the whole safety story
+> -   try { return db.users.find(u.id) }
+> -   catch (e) { log.info('lookup failed', e); return null }   // gone quiet
+> - }
+> + export function getUser(raw: unknown): User {
+> +   const input = UserInput.parse(raw)     // parse once, at the edge, into a type
+> +   try {                                  // that cannot hold a bad value  (rule 7)
+> +     return db.users.find(input.id)
+> +   } catch (err) {
+> +     alert.capture(err, { op: 'getUser' })  // a retried path must page  (rule 6)
+> +     throw err
+> +   }
+> + }
+> ```
+
+The left version passes review, passes tests, and goes silent in production. The short version of
+all fifteen:
 
 **1. Boring, searchable, safe to edit.** Obvious beats clever. Name for the domain, not the
 mechanism: `activateSubscriptionAfterPayment`, never `process`, `handle`, `manager`, `helper`.
@@ -130,48 +154,62 @@ A good name is the one a stranger greps for. Comments explain WHY, since the cod
 
 **2. Abstract late.** Duplication is cheaper than the wrong abstraction. Two similar things are not
 one thing. No factory, registry, manager or wrapper without a repeated need you can point at.
-Patterns are a response to pressure, not a starting position.
+Patterns are a response to pressure, not a starting position. You get about three innovation tokens: spend
+them where the novelty is the product, take the boring option everywhere else. The exception to
+"no dependency for something small": crypto, auth, timezone math, and hostile-format parsing.
+Hand-rolling those is a CVE with your name on it.
 
-**3. Boundaries are one-way and enforced.** Dependencies point one direction. Cross a boundary
+**3. Modules are deep, not wide.** Judge an interface by what a caller must understand, and the
+implementation by how much work it does for them. Small interface over substantial functionality.
+A pass-through layer whose methods map one to one onto the layer below is negative value: delete it.
+And define errors out of existence where you honestly can. An idempotent operation needs no
+"already applied" branch. Every error eliminated is a branch nobody can get wrong.
+
+**4. Write code that is easy to delete.** You will be wrong about the future. Code you can delete
+in an afternoon costs nothing when you are wrong; code everything extends costs a quarter. Layer by
+expected lifetime, so the vendor integration and the experiment can be cut out whole. Repeat
+yourself to avoid a dependency, never to manage one.
+
+**5. Boundaries are one-way and enforced.** Dependencies point one direction. Cross a boundary
 through its public interface, never by reaching into internals. And verify the enforcement with a
 negative probe: write the forbidden import, confirm it actually fails, then delete it. A rule that
 silently never fires is indistinguishable from a rule that passes.
 
-**4. Failures stay visible.** A caught error on a retried path must reach the alerting system, not
+**6. Failures stay visible.** A caught error on a retried path must reach the alerting system, not
 just the log. Swallowing an exception into a log line nobody watches is how a system stays broken
 in production for days while every dashboard reads green. Never pattern-match a wrapped error's
 surface field: walk the cause chain, or the next version bump turns a handled case into a crash.
 
-**5. Make invalid states unrepresentable.** Push correctness into types and schemas at the
+**7. Make invalid states unrepresentable.** Push correctness into types and schemas at the
 boundary. A comment saying "must be positive" is a wish. Parse untrusted input once, at the edge.
 Never return an internal record to a caller you do not control without whitelisting the fields.
 
-**6. Data and time.** Store instants in UTC, render in the viewer's timezone. Never format a date
+**8. Data and time.** Store instants in UTC, render in the viewer's timezone. Never format a date
 without an explicit timezone, or the output changes depending on which machine ran it. A store
 holds what its name says.
 
-**7. Tests that would have caught it.** Mocking the layer under test hides the bug you are
+**9. Tests that would have caught it.** Mocking the layer under test hides the bug you are
 shipping. A suite that is green because everything is faked proves only that the fakes agree.
 Test the race, the duplicate, the timeout, the empty list. A bug fix ships with its reproducing test.
 
-**8. Copy and locale.** User-facing text in the product's language, identifiers in English. Never
+**10. Copy and locale.** User-facing text in the product's language, identifiers in English. Never
 render an internal enum or code raw to a user. Zero em dashes.
 
-**9. Interface states are not optional.** Every async view handles all four: loading, empty, error,
+**11. Interface states are not optional.** Every async view handles all four: loading, empty, error,
 loaded. A blank screen during load is a bug, not a default.
 
-**10. Secrets and destructive actions.** Never run or suggest a command that prints secret values.
+**12. Secrets and destructive actions.** Never run or suggest a command that prints secret values.
 Confirm before anything irreversible or outward-facing. Approval for one such action does not carry
 to the next.
 
-**11. Find the file, do not grep the repo.** Map, then scope, then read. Filename search before
+**13. Find the file, do not grep the repo.** Map, then scope, then read. Filename search before
 content search. Scoped search before repo-wide. Read the nearby tests before editing.
 
-**12. Ask versus decide.** Ask only when the answer changes the outcome and the call is the
+**14. Ask versus decide.** Ask only when the answer changes the outcome and the call is the
 owner's. Do not ask about cosmetics or conventional defaults. Make the call, state it in one line,
 keep moving.
 
-**13. Documentation is part of the change.** Each rule lives in exactly one place. Decisions are
+**15. Documentation is part of the change.** Each rule lives in exactly one place. Decisions are
 append-only: supersede, never rewrite. A stale doc is worse than no doc, because it is believed.
 
 Full text with the reasoning behind each rule: **[`skills/tacape-code/SKILL.md`](./skills/tacape-code/SKILL.md)**.
@@ -197,7 +235,7 @@ Escape hatch, for a repo that legitimately needs the character:
 TACAPE_ALLOW_EMDASH=1 claude
 ```
 
-The guard is independent of the style level. `/tacape off` does not disable it. On agents without a
+The guard is independent of the style level. `/tacape:tacape off` does not disable it. On agents without a
 pre-tool hook the ban is a rule in `AGENTS.md`, which is advisory rather than enforced.
 
 ## Levels
@@ -211,9 +249,9 @@ pre-tool hook the ban is a rule in `AGENTS.md`, which is advisory rather than en
 | `off` | Style layer off. Guard stays on. |
 
 ```
-/tacape          show the current level
-/tacape ultra    switch
-/tacape off      disable the style layer
+/tacape:tacape          show the current level
+/tacape:tacape ultra    switch
+/tacape:tacape off      disable the style layer
 ```
 
 The level persists in `~/.claude/.tacape-mode`. Override for one session with `TACAPE_LEVEL=ultra`.
@@ -252,8 +290,8 @@ straight into your terminal and a planted file could otherwise inject ANSI escap
 |---|---|
 | `tacape` | Always, via `SessionStart`. Compression and structure. |
 | `tacape-code` | Writing, refactoring or reviewing code in any language. |
-| `tacape-commit` | "write a commit", `/tacape-commit`. Conventional Commits, 50 char subject, body only when the diff cannot answer why. |
-| `tacape-review` | "review this diff", `/tacape-review`. One line per finding, severity ranked, capped at 8 and never silently truncated. |
+| `tacape-commit` | "write a commit", `/tacape:tacape-commit`. Conventional Commits, 50 char subject, body only when the diff cannot answer why. |
+| `tacape-review` | "review this diff", `/tacape:tacape-review`. One line per finding, severity ranked, capped at 8 and never silently truncated. |
 
 ## Where the principles come from
 
@@ -274,15 +312,20 @@ Each of these named the thing long before it showed up as a rule here:
 |---|---|
 | Duplication is far cheaper than the wrong abstraction | Sandi Metz, [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction) (2016) |
 | Complexity is the enemy, boring wins, resist the demon spirit of complexity | Carson Gross, [The Grug Brained Developer](https://grugbrain.dev/) (2022) |
-| Optimize for deletion, not extension. Layer so the hard parts are isolated | tef, [Write code that is easy to delete, not easy to extend](https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to) (2016) |
+| Optimize for deletion, layer by expected lifetime, repeat yourself to avoid a dependency but never to manage one | tef, [Write code that is easy to delete, not easy to extend](https://programmingisterrible.com/post/139222674273/write-code-that-is-easy-to-delete-not-easy-to) (2016). Rule 4 |
 | Parse untrusted input once, at the edge, into a type that cannot be wrong | Alexis King, [Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) (2019) |
 | Make illegal states unrepresentable | Yaron Minsky, Jane Street, from the OCaml tradition |
 | Pure decision logic first, effects at the shell | Gary Bernhardt, Functional Core / Imperative Shell, Destroy All Software (2012) |
 | The rule of three, and YAGNI | Martin Fowler, Refactoring, crediting Don Roberts |
 | Dependencies point one direction, inward | Robert C. Martin, the Dependency Rule, Clean Architecture |
-| Complexity is incremental, and interfaces should be deeper than they are wide | John Ousterhout, A Philosophy of Software Design (2018) |
-| Prefer the boring, well-understood option | Dan McKinley, [Choose Boring Technology](https://mcfunley.com/choose-boring-technology) (2015) |
-| Tests should be about behavior, fast, and give confidence rather than coverage | Kent Beck, Test Desiderata (2019) |
+| Deep modules, pushing complexity down, defining errors out of existence, tactical vs strategic | John Ousterhout, A Philosophy of Software Design (2018). Rule 3 |
+| Innovation tokens: spend novelty where it is the product, take the well-understood option everywhere else | Dan McKinley, [Choose Boring Technology](https://mcfunley.com/choose-boring-technology) (2015). Rule 2 |
+| A subset of Test Desiderata: deterministic, isolated, fast, behavior over implementation, confidence over coverage | Kent Beck, Test Desiderata (2019). Rule 9 |
+
+Every row above points at the rule that carries it. If a row ever stops tracing to a rule, delete
+the row rather than keeping the borrowed authority: an earlier version of this table credited
+Ousterhout, tef and McKinley for ideas that were nowhere in the file, which an audit caught and
+which is the reason each row now names its rule.
 
 What tacape adds is not a new idea. It is that an agent applies these by default, on every diff,
 without you having to remember to ask. Reading the essays changes what you believe. A skill file
@@ -308,8 +351,24 @@ principles.
 
 ## What it deliberately does not do
 
-No token accounting or savings dashboard. No statusline. No subagents. It shapes output and
+No token accounting or savings dashboard. No subagents. No statusline wired for you
+without asking. It shapes output and
 encodes principles, nothing more.
+
+## Development
+
+```bash
+bash tests/run.sh                  # 43 assertions, no framework, no dependencies
+bash hooks/install-git-hooks.sh    # pre-commit guard against the banned characters
+```
+
+CI runs the same file on every push. The suite covers the hooks against adversarial input, the
+manifests, and a set of assertions that fail when `AGENTS.md` and `skills/tacape/SKILL.md` drift
+apart, because those are two hand-maintained copies of one ruleset.
+
+This exists because the principles in this repo demand tests and tool-enforced rules, and for the
+first three commits tacape had neither. An audit pointed that out, correctly, as the finding that
+undercut everything else it claims.
 
 ## License
 

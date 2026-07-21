@@ -1,0 +1,27 @@
+#!/bin/bash
+# tacape pre-commit hook. Install with: bash hooks/install-git-hooks.sh
+#
+# Blocks a commit that would introduce a dash-family character. The PreToolUse guard covers what
+# the agent writes through its tools; this covers everything else that reaches the index, which
+# is the gap the guard cannot see.
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$STAGED" ] && exit 0
+
+FOUND=""
+while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  if grep -lP '\x{2013}|\x{2014}|\x{2015}' "$f" >/dev/null 2>&1; then
+    FOUND="$FOUND  $f"$'\n'
+  fi
+done <<< "$STAGED"
+
+if [ -n "$FOUND" ]; then
+  printf 'Blocked by tacape: dash-family character (U+2013, U+2014, U+2015) in staged files:\n'
+  printf '%s' "$FOUND"
+  printf 'Replace with a comma, a colon, a period, or a real hyphen "-".\n'
+  printf 'To override once: git commit --no-verify\n'
+  exit 1
+fi
+
+exit 0

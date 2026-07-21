@@ -17,32 +17,38 @@ const DEFAULT_LEVEL = 'full';
 const claudeDir = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
 const modePath = path.join(claudeDir, '.tacape-mode');
 
+// Returns the source too: an env override is documented as per-session, so it must never be
+// written back to the mode file. One `TACAPE_LEVEL=ultra claude` would otherwise change the
+// user's default for every future session.
 function readLevel() {
   const fromEnv = (process.env.TACAPE_LEVEL || '').trim().toLowerCase();
-  if (fromEnv === 'off' || LEVELS.has(fromEnv)) return fromEnv;
+  if (fromEnv === 'off' || LEVELS.has(fromEnv)) return { level: fromEnv, source: 'env' };
 
   try {
     const fromFile = fs.readFileSync(modePath, 'utf8').trim().toLowerCase();
-    if (fromFile === 'off' || LEVELS.has(fromFile)) return fromFile;
+    if (fromFile === 'off' || LEVELS.has(fromFile)) return { level: fromFile, source: 'file' };
   } catch (e) { /* no mode file yet */ }
 
-  return DEFAULT_LEVEL;
+  return { level: DEFAULT_LEVEL, source: 'default' };
 }
 
-const level = readLevel();
+const { level, source } = readLevel();
 
 if (level === 'off') {
   process.stdout.write('');
   process.exit(0);
 }
 
-// Persist the resolved level so the statusline and the next session agree.
+// Persist the resolved level so the statusline and the next session agree, but never persist an
+// env override: it is documented as lasting one session.
 // Symlink-safe: never follow a symlink out of the config dir.
-try {
-  if (!fs.existsSync(modePath) || !fs.lstatSync(modePath).isSymbolicLink()) {
-    fs.writeFileSync(modePath, level, 'utf8');
-  }
-} catch (e) { /* non-fatal, never block session start */ }
+if (source !== 'env') {
+  try {
+    if (!fs.existsSync(modePath) || !fs.lstatSync(modePath).isSymbolicLink()) {
+      fs.writeFileSync(modePath, level, 'utf8');
+    }
+  } catch (e) { /* non-fatal, never block session start */ }
+}
 
 let body = '';
 try {

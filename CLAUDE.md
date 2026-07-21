@@ -20,4 +20,10 @@ when tacape is used as a plain instruction file instead of an installed plugin.
   `\u2014` escape sequence, so the file survives its own check.
 - The guard emits nothing on the allow path. Returning an explicit allow decision would
   auto-approve every write in the session.
-- Before committing, run the checks in `INSTALL.md` under "Verify".
+- Run `bash tests/run.sh` before committing. CI runs the same file, and `hooks/install-git-hooks.sh`
+  installs a pre-commit hook that blocks the banned characters. Do not go back to a manual
+  checklist: an unenforced rule is the exact failure mode this plugin exists to attack.
+- Bump `version` in `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json` and
+  `gemini-extension.json` on every content change. Plugin caches are keyed by version, so without
+  a bump nobody who installed tacape ever receives the change. A test asserts the three agree.
+- The slash command registers as `/tacape:tacape`, not `/tacape`. A test asserts the docs say so.

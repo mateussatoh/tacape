@@ -46,8 +46,50 @@ surrounding code > this skill. Never impose these over a codebase that consisten
   Premature extraction turns a local edit into a cross-repo negotiation.
 - **New dependencies are guilty until proven.** For anything small, check the standard library and
   the deps you already have. Every dependency is a supply chain, a version bump, and a license.
+  The exception that is not optional: cryptography, authentication, date and timezone arithmetic,
+  and anything parsing a hostile format. Hand-rolling those is not independence, it is a CVE with
+  your name on it. "No new dependency for something small" means small, not merely short.
+- **You get about three innovation tokens.** Choosing the unfamiliar database, the unfamiliar
+  language and the unfamiliar deployment model at once spends them all before you have shipped
+  anything, and every unknown then compounds with every other. Spend the tokens where the novelty
+  is the actual product, and take the boring, widely deployed, well documented option everywhere
+  else. Boring here means well understood failure modes, not old.
 
-## 3. Boundaries are one-way and enforced
+## 3. Modules are deep, not wide
+
+- **A good module hides more than it exposes.** Measure an interface by what a caller must
+  understand to use it, and the implementation by how much work it does on their behalf. The best
+  ratio is a small interface over substantial functionality. A class with fifteen setters and no
+  behavior is the worst ratio: pure cost, zero leverage.
+- **Shallow layers that only pass calls through are negative value.** They add a name to learn, a
+  file to open and a place to be out of date, while hiding nothing. If a layer's methods map one to
+  one onto the layer below, delete it.
+- **Define errors out of existence** where you honestly can. The best handling of an error case is
+  a design where it cannot arise: an operation that is idempotent needs no "already applied" branch,
+  a delete that tolerates a missing key needs no existence check. Every error you eliminate is a
+  branch nobody has to test, read, or get wrong. This is not the same as swallowing errors, which
+  is rule 6. Eliminate the case, or surface it. Never hide it.
+- **Push complexity down, into the module, not out onto every caller.** One hard implementation
+  read by its author beats twenty callers each solving the same problem slightly differently.
+- **Tactical work accumulates interest.** Shipping the quick version is a real and often correct
+  choice, but it is a loan. Say out loud that you are taking it, and against what. The failure mode
+  is not one tactical fix, it is a hundred of them with nobody ever having decided.
+
+## 4. Write code that is easy to delete
+
+- **Optimize for removal, not for extension.** You will be wrong about the future. Code you can
+  delete in an afternoon costs nothing when you are wrong. Code that everything extends costs a
+  quarter.
+- **Layer by expected lifetime.** Put the parts most likely to change, the vendor integration,
+  the experiment, the campaign logic, in their own layer at the edge, so they can be cut out
+  whole. Keep the stable core free of references to them.
+- **Repeat yourself to avoid a dependency, but never to manage one.** Copying a helper into two
+  packages so neither depends on the other is often correct. Copying the same business rule into
+  two places so it must be changed twice is never correct. The test: would a change to this need
+  to happen in both copies at the same time? If yes, it is one thing.
+- **A dependency you can delete is worth more than an abstraction you cannot.**
+
+## 5. Boundaries are one-way and enforced
 
 - **Dependencies point one direction.** Low-level and general at the bottom, specific and
   deployable at the top. Policy does not import mechanism's caller. Cycles are a design smell,
@@ -60,7 +102,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
   confirm the check actually fails, then delete it. A rule that silently never fires is
   indistinguishable from a rule that passes. Config that looks right is not evidence.
 
-## 4. Failures stay visible
+## 6. Failures stay visible
 
 - **Structured logging, never bare stdout printing.** Distinguish the levels and mean them:
   `error` is an operational alert someone is paged for, `warn` is an expected anomaly that resolves
@@ -75,7 +117,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
 - **Fail closed on ambiguity** for anything touching money, permissions, or deletion.
   When the code cannot tell, it refuses. It does not guess.
 
-## 5. Make invalid states unrepresentable
+## 7. Make invalid states unrepresentable
 
 - Push correctness into types, schemas and validators at the boundary. A comment saying "must be
   positive" is a wish. A type that cannot hold a negative is a guarantee.
@@ -87,7 +129,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
 - **Separate decision from effect.** Pure logic first, then the writes, calls and logs. The pure
   part is the part you can test without a world.
 
-## 6. Data and time
+## 8. Data and time
 
 - **Store instants in UTC, render in the viewer's timezone.** Every timestamp is an absolute
   instant. Never persist local wall-clock time, never do arithmetic on a formatted string.
@@ -97,7 +139,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
   a domain record because it was the convenient table. It is convenient once and wrong forever.
 - **Identifiers are opaque and stable.** Never key on a mutable human-readable string.
 
-## 7. Tests that would have caught it
+## 9. Tests that would have caught it
 
 - **A feature ships with tests.** Integration across the real critical path, unit on new pure
   logic. No test, not done.
@@ -109,8 +151,17 @@ surrounding code > this skill. Never impose these over a codebase that consisten
 - **Test the failure, not just the happy path.** The race, the duplicate, the timeout, the retry,
   the empty list, the permission denial.
 - **A bug fix ships with the test that reproduces it.** Otherwise it comes back.
+- **Deterministic.** Same input, same result, every run. A test that depends on the clock, on
+  `random`, on map ordering, or on the network is not a test, it is a coin flip that occasionally
+  blames the wrong commit. Inject the clock and the seed.
+- **Isolated.** Tests do not share mutable state and do not care what order they run in. Order
+  dependence hides as a pass until someone parallelizes the suite.
+- **Fast.** A suite nobody waits for is a suite nobody runs. Speed is not a nicety here, it decides
+  whether the tests participate in the edit loop or become a thing CI complains about later.
+- **Test behavior, not implementation.** A test that breaks on every refactor while the behavior
+  is unchanged is a tax on improvement, and teaches people to delete tests.
 
-## 8. Localization and copy
+## 10. Localization and copy
 
 - **User-facing text in the product's language, identifiers in English.** No mixed-language
   identifiers, keys, columns, or route segments. Code is read by people who did not ship it.
@@ -121,7 +172,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
 - **No `X - Y - Z` dash-parenthetical in user-facing prose.** A faux em dash built from hyphens
   fencing an aside is the same tell. Rewrite with a colon, a period, or a different sentence.
 
-## 9. Interface states are not optional
+## 11. Interface states are not optional
 
 - **Every asynchronous view handles all four states**: loading, empty, error, loaded.
   A blank screen during load is a bug, not a default.
@@ -130,7 +181,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
 - **Keep presentation, data access and business rules in different places.** A view that queries is
   a view you cannot reuse or test.
 
-## 10. Secrets and destructive actions
+## 12. Secrets and destructive actions
 
 - Secrets live in a secret store, never in the repo and never in a local file the agent reads.
 - **Never run or suggest a command that prints secret values.** If something fails on a missing
@@ -138,7 +189,7 @@ surrounding code > this skill. Never impose these over a codebase that consisten
 - **Confirm before anything irreversible or outward-facing**: deletion, migration, force push,
   deploy, or sending to a real recipient. Approval for one such action does not carry to the next.
 
-## 11. Find the file, do not grep the repo
+## 13. Find the file, do not grep the repo
 
 Map, then scope, then read. Blind repo-wide content search is the last resort, not the first move.
 
@@ -149,7 +200,7 @@ Map, then scope, then read. Blind repo-wide content search is the last resort, n
 5. **Structural search when the shape matters** more than the text ("find every call to X with
    two arguments"). Fall back to text search when no structural tool is available.
 
-## 12. Ask versus decide
+## 14. Ask versus decide
 
 Ask only when the answer changes the outcome AND the call belongs to the owner: conflicting
 requirements, an architectural fork with real tradeoffs, a product, pricing, legal or safety
@@ -159,7 +210,7 @@ Batch the questions into one round.
 Do not ask about cosmetics, conventional defaults, reversible low-stakes choices, or anything
 derivable from the code and docs. Make the call, state it in one line, keep moving.
 
-## 13. Documentation is part of the change
+## 15. Documentation is part of the change
 
 - **Docs live next to what they describe.** Do not dump new files at the repo root.
 - **Changed a decision, contract, or rule? Update its doc in the same change.** A stale doc is

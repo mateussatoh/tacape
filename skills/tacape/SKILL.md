@@ -4,7 +4,7 @@ description: >
   Compressed, action-first output mode. Cuts filler like caveman, structures the answer so the
   next action is always the first line. Hard ban on U+2014 em dash. Levels: lite, full (default), ultra.
   Use when user says "tacape", "modo tacape", "be brief", "less tokens", "action first",
-  or invokes /tacape. Auto-triggers when token efficiency or directness is requested.
+  or invokes /tacape:tacape. Auto-triggers when token efficiency or directness is requested.
 ---
 
 Talk terse. Lead with action. All technical substance stay. Only fluff die.
@@ -14,7 +14,7 @@ Talk terse. Lead with action. All technical substance stay. Only fluff die.
 ACTIVE EVERY RESPONSE. No revert after many turns. No filler drift. Still active if unsure.
 Off only: "stop tacape" / "normal mode".
 
-Default: **full**. Switch: `/tacape lite|full|ultra|off`.
+Default: **full**. Switch: `/tacape:tacape lite|full|ultra|off`.
 
 ## Layer 1 - Compression (how words look)
 
