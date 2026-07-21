@@ -28,19 +28,30 @@
   <a href="#where-the-principles-come-from">Credits</a>
 </p>
 
+<p align="center"><a href="./README_pt.md">Português brasileiro</a></p>
+
 ---
 
 ## The problem is not that agents talk too much
 
-It is, a little. But brevity plugins already exist and they are good, and if you install one you will notice something annoying: the agent is now terse and you still cannot find the answer.
+It is, a little.
 
-Here is the thing. There are three separate failures in a bad agent response, and they stack.
+But imagine an agent answer as a negotiation. One part knows the answer. Another part wants
+to explain every possible edge case. A third part wants to make the response sound helpful
+before doing anything helpful.
 
-**Failure one is volume.** "Sure! I'd be happy to help you with that. The issue you're experiencing is most likely caused by..." Forty words before a single fact. This is the one everybody notices, and the easiest to fix.
+The result is familiar: you ask for a fix, receive a small essay, and discover the command
+you need hiding near the end. You understood it. You still did not start.
 
-**Failure two is order.** Cut the fluff and you still get context, then reasoning, then background, then, in the last sentence, the thing you were supposed to type. Your eye travels to the bottom and back. If you are tired, or distracted, or have ADHD, that trip is where the task quietly dies. You read it, you understood it, you did not do it.
+Then comes the worse version. The answer is short, the action is first, and the code is
+still wrong. It validates input and casts anyway, catches failures into a log nobody watches,
+or ships without a test. Fast, organized, unsafe.
 
-**Failure three is the code itself.** A terse agent that leads with the action will still hand you a function that validates input and then casts it anyway, catches an exception into a log line nobody watches, and ships with no test. Fast, well organized, wrong.
+There are three failures, and they stack:
+
+1. Volume hides the fact.
+2. Order hides the action.
+3. Weak engineering hides the defect.
 
 Three failures, three layers:
 
@@ -91,6 +102,7 @@ Then symlink it to whatever your agent expects, so one copy stays the source of 
 
 > [!WARNING]
 > **One style plugin at a time.** Two always-on `SessionStart` hooks injecting competing style rules produce drift, not a blend. Uninstall the other one first, then check your settings file, because a plugin uninstall does not remove hooks that a standalone installer wrote directly into settings. That failure mode is real and it is silent: your old plugin keeps running and you cannot work out why nothing changed.
+
 
 ## See it
 
@@ -342,10 +354,22 @@ CI runs the same file on every push. The suite covers the hooks against adversar
 
 This exists because the principles in this repo demand tests and tool-enforced rules, and for the first three commits tacape had neither. An audit pointed that out, correctly, as the finding that undercut everything else it claims. A plugin arguing that prompt rules decay and belong in the tool layer has to hold its own rules in the tool layer too, or it is a blog post with a manifest.
 
+## Compare instruction styles
+
+Run OpenAI benchmark against neutral, Caveman, i-have-adhd and tacape instructions:
+
+```bash
+python3 benchmarks/run-openai.py --dry-run
+OPENAI_API_KEY=... python3 benchmarks/run-openai.py
+```
+
+Same prompts, same model, fixed request shape, repeated trials, median output tokens. Benchmark
+reports data for this prompt set. It does not claim universal superiority.
+
 ## What it deliberately does not do
 
-No token accounting. No subagents. No statusline wired without asking. It shapes output and encodes principles, nothing more.
-
+No runtime token accounting. No subagents. No statusline wired without asking. It shapes output
+and encodes principles, nothing more.
 ## License
 
 MIT.

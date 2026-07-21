@@ -1,0 +1,7 @@
+[
+  {"id":"bug-fix","category":"coding","prompt":"Fix a token expiry boundary bug in authentication middleware. Explain the change and provide a test."},
+  {"id":"debugging","category":"debugging","prompt":"A production API intermittently returns 500 during database pool exhaustion. Diagnose likely causes and propose a safe fix."},
+  {"id":"review","category":"review","prompt":"Review a pull request that adds a payment webhook. List correctness, security, and reliability risks, then prioritize fixes."},
+  {"id":"refactor","category":"refactor","prompt":"Refactor a callback-based file import pipeline to async functions while preserving retries, ordering, and error visibility."},
+  {"id":"explain","category":"explanation","prompt":"Explain when to choose a deep module over a thin abstraction in a production codebase, with one concrete example."}
+]
