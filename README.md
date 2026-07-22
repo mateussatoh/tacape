@@ -146,6 +146,15 @@ sequência segura e verificação executável. O resultado ainda não prova que 
 neutro: ambos passaram todos os casos. A diferença deve ser medida pelo patch produzido, testes e
 decisões inventadas, não por tokens isolados.
 
+### Caso de segurança real
+
+Também testamos um caso onde Tacape deve brilhar: corrigir shell injection em `run-command.js`
+sem suprimir erros, perder stdout ou alterar exit codes. Terra passou o caso em modo neutro e
+Tacape, um trial para cada modo.
+
+O benchmark usa arquivos e testes reais em sandbox temporário. Não considera resposta correta sem
+execução bem-sucedida do teste.
+
 ## Contribua
 
 O projeto está em beta e precisa de código, exemplos e dados melhores.

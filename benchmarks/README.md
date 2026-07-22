@@ -65,6 +65,19 @@ Expanded fixture cases now verify:
 2. delayed callbacks still preserve input order;
 3. permanent failure remains visible and stops later files.
 
+## Casos onde Tacape deve brilhar
+
+`command-boundary` testa uma correção de segurança real: remover shell injection sem esconder
+falhas, perder stdout ou alterar exit codes.
+
+```bash
+python3 benchmarks/run-refactor-sandbox.py \
+  openai-codex/gpt-5.6-terra \
+  --fixture command-boundary \
+  --mode tacape \
+  --trials 1
+```
+
 A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença percentual contra neutro.
 Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
 ação, segurança e clareza.
