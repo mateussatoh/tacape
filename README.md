@@ -15,6 +15,14 @@
 </p>
 
 <p align="center">
+  <strong>Compressão. Ação primeiro. Regras de engenharia que evitam código obviamente ruim.</strong>
+</p>
+
+<p align="center">
+  Menos novela no output. Mais erro visível, testes honestos e código fácil de deletar.
+</p>
+
+<p align="center">
   <a href="https://github.com/mateussatoh/tacape/stargazers"><img src="https://img.shields.io/github/stars/mateussatoh/tacape?style=flat&color=b5651d" alt="Stars"></a>
   <a href="./INSTALL.md"><img src="https://img.shields.io/badge/funciona_com-5_familias_de_agente-b5651d?style=flat" alt="Agentes"></a>
   <a href="./tests/run.sh"><img src="https://img.shields.io/badge/testes-48_passando-4c9a2a?style=flat" alt="Testes"></a>
@@ -264,6 +272,139 @@ testes próximos antes de editar.
 **15. Documentação faz parte da mudança.** Cada regra mora em exatamente um lugar. Decisões são
 append-only: substitua, nunca reescreva. Um doc desatualizado é pior que nenhum doc, porque nele se
 acredita.
+
+
+### Exemplos rápidos
+
+**1. Nome pesquisável**
+
+```ts
+// ruim
+function process(input) {}
+
+// melhor
+function activateSubscriptionAfterPayment(input) {}
+```
+
+**2. Abstraia tarde**
+
+```ts
+// duas regras parecidas ainda podem divergir
+const canRefundOrder = order.status === 'paid'
+const canCancelSubscription = subscription.status === 'active'
+```
+
+**3. Módulo profundo**
+
+```ts
+// ruim: repasse sem decisão
+return paymentClient.createInvoice(input)
+
+// melhor: módulo dono da regra
+return billing.createRenewalCycle(customerId)
+```
+
+**4. Código fácil de deletar**
+
+```ts
+// experimento isolado por integração
+const checkoutExperiment = createCheckoutExperiment(config)
+```
+
+**5. Fronteira de mão única**
+
+```ts
+// permitido
+import { billing } from '@/billing'
+
+// proibido
+import { calculateTax } from '@/billing/internal/tax'
+```
+
+**6. Falhas visíveis**
+
+```ts
+try {
+  await retry(sendWebhook)
+} catch (error) {
+  alert.capture(error, { operation: 'sendWebhook' })
+  throw error
+}
+```
+
+**7. Estados inválidos irrepresentáveis**
+
+```ts
+const UserId = z.string().uuid()
+const input = UserId.parse(request.params.userId)
+```
+
+**8. Dados e tempo**
+
+```ts
+const storedAt = new Date().toISOString()
+const label = formatInTimeZone(storedAt, user.timeZone, 'dd/MM/yyyy')
+```
+
+**9. Teste que pega bug**
+
+```ts
+it('does not create two cycles for duplicate webhook', async () => {
+  await handleWebhook(event)
+  await handleWebhook(event)
+  expect(await countCycles(event.id)).toBe(1)
+})
+```
+
+**10. Texto e locale**
+
+```ts
+// ruim
+return status === 'PENDING' ? 'PENDING' : 'PAID'
+
+// melhor
+return status === 'PENDING' ? t('payment.pending') : t('payment.paid')
+```
+
+**11. Estados de interface**
+
+```tsx
+if (loading) return <Spinner />
+if (error) return <ErrorState />
+if (items.length === 0) return <EmptyState />
+return <OrderList items={items} />
+```
+
+**12. Segredos e ações destrutivas**
+
+```ts
+// ruim
+console.log(process.env.STRIPE_SECRET_KEY)
+
+// melhor
+await confirm('Delete production customer?')
+```
+
+**13. Ache o arquivo**
+
+```text
+ruim: grep em todo o repositório sem contexto
+melhor: mapear diretório, localizar símbolo, ler teste próximo, editar
+```
+
+**14. Perguntar versus decidir**
+
+```text
+default convencional: decidir e seguir
+decisão de produto ou ação irreversível: perguntar antes
+```
+
+**15. Documentação faz parte da mudança**
+
+```text
+mudou contrato ou regra: atualize o documento que é dono dela
+não espalhe a mesma regra em README, skill e comentário
+```
 
 </details>
 

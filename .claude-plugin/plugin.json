@@ -1,6 +1,6 @@
 {
   "name": "tacape",
-  "description": "Compressed, action-first output plus language-agnostic engineering principles. Cuts filler, leads with the next action, hard-blocks the em dash at write time.",
+  "description": "Action-first output, Caveman-style compression, and opinionated engineering rules for AI coding agents. Optional write-time em dash guard.",
   "version": "0.3.0",
   "author": {
     "name": "Mateus Satoh",

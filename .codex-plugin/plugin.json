@@ -1,7 +1,7 @@
 {
   "name": "tacape",
   "version": "0.3.0",
-  "description": "Compressed, action-first output plus language-agnostic engineering principles. Bans the em dash.",
+  "description": "Action-first output, Caveman-style compression, and opinionated engineering rules for AI coding agents. Optional write-time em dash guard.",
   "author": {
     "name": "Mateus Satoh",
     "url": "https://github.com/mateussatoh"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "tacape",
     "shortDescription": "Cut the filler. Lead with the action. Write code that survives review.",
-    "longDescription": "Three layers in one: output compression, action-first answer structure, and language-agnostic engineering principles applied while writing and reviewing code. Plus a hard ban on the U+2014 em dash.",
+    "longDescription": "Three layers in one: output compression, action-first answer structure, and language-agnostic engineering principles applied while writing and reviewing code. Optional write-time em dash guard.",
     "developerName": "Mateus Satoh",
     "category": "Productivity",
     "capabilities": [
