@@ -528,23 +528,44 @@ terminal e um arquivo plantado injetaria sequências ANSI a cada refresh.
 
 ## Números honestos
 
-**O tacape não reporta tokens economizados, e isso é deliberado.**
+**O tacape não promete tokens economizados. Quando mede, publica o resultado completo, inclusive quando é ruim.**
 
 Todo número de "X% economizado" nesta categoria é uma estimativa contra um contrafactual que ninguém
 observou. Você não tem como saber o que o agente *teria* dito sem o plugin, porque ele não disse. Dá
 para estimar, e as estimativas não são inúteis, mas são estimativas fantasiadas de medição.
 
-O que dá para dizer com honestidade, sem número:
+O que dá para dizer antes de medir:
 
-- **Tokens de saída caem.** Obviamente. É o que a camada 1 faz.
+- **Tokens de saída podem cair.** É o que a camada 1 tenta fazer.
 - **Tokens de entrada sobem um pouco.** O conjunto de regras é injetado no `SessionStart`. Não é de graça.
 - **Em workloads já concisos o saldo pode ficar negativo.** Se seus prompts são de uma linha e as respostas têm três palavras, você está pagando o custo do ruleset por uma compressão de que não precisava.
-- **O ganho real não é dinheiro.** É que você acha a resposta, e que o código que volta tem menos dos defeitos específicos que a camada 3 mira. Custo é efeito colateral.
+- **O ganho real não é automaticamente dinheiro.** É achar a resposta e reduzir defeitos específicos que a camada 3 mira. Custo é efeito colateral.
 
 Uma versão anterior deste README trazia uma tabela de atribuição creditando onze ensaios por ideias
 que estavam só parcialmente no arquivo. Uma auditoria pegou. A lição generaliza: este projeto prefere
 não entregar número nenhum a entregar um número lisonjeiro. Se um eval A/B medido aparecer depois, o
 número vem para cá com o harness do lado.
+
+### Benchmark inicial
+
+O primeiro benchmark usou GPT-5.6, cinco prompts, três trials por instrução e 60 chamadas de API.
+Métrica: mediana de tokens de saída por instrução, sem contar tokens de entrada.
+
+| Instrução | Tokens de saída | Diferença contra neutro |
+|---|---:|---:|
+| Neutra | 1247 | 0% |
+| Caveman | 837 | 33% menos |
+| i-have-adhd | 1561 | 25% mais |
+| Tacape | 1515 | 21% mais |
+
+O resultado é menos bonito para Tacape do que o benchmark inicial de um trial por prompt, que tinha
+mostrado 37% menos tokens. A explicação mais provável é que o ruleset de engenharia aumenta a saída em
+tasks de `explain` e `refactor`. Isso é exatamente o tipo de resultado que precisa aparecer, não ser
+escondido.
+
+Conclusão atual: Caveman comprime melhor. Tacape tenta trocar parte dessa economia por estrutura,
+regras de engenharia e segurança. Ainda não existe evidência suficiente para afirmar que essa troca
+melhora a qualidade das respostas.
 
 ## De onde vêm os princípios
 
