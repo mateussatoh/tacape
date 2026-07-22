@@ -47,6 +47,18 @@ This isolates two quality gates: asking for missing context and applying a minim
 provided code. Review responses for correctness, invariant preservation, applicability, and
 unnecessary invention. Token count is not a quality score.
 
+## Real refactor sandbox
+
+```bash
+python3 benchmarks/run-refactor-sandbox.py \
+  openai-codex/gpt-5.6-terra \
+  --trials 2
+```
+
+Each trial copies isolated fixture, lets model inspect and edit real files with tools, then runs
+fixture tests. A passing response must preserve ordering, retry same file, and expose permanent
+failure. This measures applied behavior, not hypothetical code in prompt output.
+
 A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença percentual contra neutro.
 Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
 ação, segurança e clareza.
