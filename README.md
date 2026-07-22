@@ -68,32 +68,22 @@ Não rode dois plugins de estilo sempre ativos ao mesmo tempo. Eles competem pel
 
 Tacape não tenta impor gosto pessoal. As regras atacam falhas concretas de produção:
 
-1. **Código chato e pesquisável:** `activateSubscriptionAfterPayment`, não `process`.
-2. **Abstraia tarde:** duplicação temporária custa menos que abstração errada.
-3. **Módulos profundos:** interface pequena, trabalho real por baixo.
-4. **Código fácil de deletar:** experimento isolado, fornecedor isolado.
-5. **Fronteiras de mão única:** importe API pública, nunca internals.
-6. **Falhas visíveis:** retry sem alerta é falha escondida.
-7. **Estados inválidos irrepresentáveis:** `UserId.parse(raw)` na borda, não cast espalhado.
-8. **Tempo explícito:** guarde UTC, renderize no fuso do usuário.
-9. **Testes que pegariam o bug:** duplicata, timeout, corrida, lista vazia.
-10. **Texto separado de código:** enum interno não é copy de usuário.
-11. **Interface completa:** loading, vazio, erro e sucesso.
-12. **Segredos e destruição:** nunca imprima segredo, confirme ação irreversível.
-13. **Descoberta antes da edição:** mapeie diretório, localize símbolo, leia testes próximos.
-14. **Pergunte só quando importa:** decida defaults convencionais e siga.
-15. **Documentação acompanha contrato:** regra precisa ter uma fonte de verdade.
+1. **Código chato e pesquisável:** `activateSubscriptionAfterPayment()`, não `process()`.
+2. **Abstraia tarde:** repita `canRefundOrder()` e `canCancelSubscription()` até existir regra compartilhada.
+3. **Módulos profundos:** `billing.createRenewalCycle(id)` esconde retry, idempotência e persistência.
+4. **Código fácil de deletar:** mantenha `createCheckoutExperiment()` isolado do fluxo principal.
+5. **Fronteiras de mão única:** `import { billing } from '@/billing'`, nunca `@/billing/internal/tax`.
+6. **Falhas visíveis:** `catch (error) { alert.capture(error); throw error }`.
+7. **Estados inválidos irrepresentáveis:** `const id = UserId.parse(raw)`, não `raw as UserId`.
+8. **Tempo explícito:** `new Date().toISOString()` para guardar, timezone do usuário para renderizar.
+9. **Testes que pegariam o bug:** chame o webhook duas vezes e espere um ciclo, não dois.
+10. **Texto separado de código:** `t('payment.pending')`, não renderize `'PENDING'`.
+11. **Interface completa:** trate `loading`, `error`, lista vazia e dados carregados.
+12. **Segredos e destruição:** nunca `console.log(process.env.SECRET)`; confirme antes de deletar produção.
+13. **Descoberta antes da edição:** localize `getUser`, leia o teste próximo, depois edite.
+14. **Pergunte só quando importa:** decida um default convencional; pergunte antes de apagar dados.
+15. **Documentação acompanha contrato:** mudou uma regra? Atualize o documento dono dela.
 
-Exemplo rápido:
-
-```ts
-// ruim: validou e perdeu a garantia com cast
-const user = raw as User
-
-// melhor: parse uma vez na borda, erro continua visível
-const input = UserInput.parse(raw)
-return users.find(input.id)
-```
 
 A precedência é simples: regras visíveis do repositório alvo ganham das regras do Tacape.
 
