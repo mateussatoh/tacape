@@ -18,13 +18,26 @@ function runImport(files, failures = new Set(), permanent = new Set()) {
   });
 }
 
-const result = await runImport(["a", "b"], new Set(["a"]));
+const result = await runImport(["a", "b"], new Set([ "a" ]));
 assert.deepEqual(result.calls, ["a", "a", "b"]);
 assert.equal(result.attempts.get("a"), 2);
 assert.equal(result.attempts.get("b"), 1);
 
-await assert.rejects(
-  runImport(["a", "b"], new Set(), new Set(["a"])),
-  /temporary a/,
-);
+const delayed = await new Promise((resolve, reject) => {
+  const calls = [];
+  importFiles(["a", "b"], (file, callback) => {
+    calls.push(file);
+    setTimeout(callback, file === "a" ? 5 : 0);
+  }, (error) => error ? reject(error) : resolve(calls));
+});
+assert.deepEqual(delayed, ["a", "b"]);
+
+let permanentError;
+try {
+  await runImport(["a", "b"], new Set(), new Set(["a"]));
+} catch (error) {
+  permanentError = error;
+}
+assert.match(permanentError.message, /temporary a/);
+assert.deepEqual(permanentError.calls, ["a"]);
 console.log("fixture tests passed");

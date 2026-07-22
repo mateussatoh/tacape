@@ -59,6 +59,12 @@ Each trial copies isolated fixture, lets model inspect and edit real files with 
 fixture tests. A passing response must preserve ordering, retry same file, and expose permanent
 failure. This measures applied behavior, not hypothetical code in prompt output.
 
+Expanded fixture cases now verify:
+
+1. transient failure retries same file before advancing;
+2. delayed callbacks still preserve input order;
+3. permanent failure remains visible and stops later files.
+
 A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença percentual contra neutro.
 Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
 ação, segurança e clareza.

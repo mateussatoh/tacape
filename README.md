@@ -129,6 +129,23 @@ python3 benchmarks/run-omp.py \
   --trials 2
 ```
 
+### Refactor real no sandbox
+
+O benchmark real copia uma fixture isolada, permite que o agente leia e edite arquivos, e executa
+testes de comportamento depois da mudança. Terra passou quatro de quatro trials, dois neutros e
+dois com Tacape.
+
+Casos verificados:
+
+1. retry da mesma entrada antes de avançar;
+2. callbacks assíncronos preservando ordem;
+3. falha permanente visível, sem processar entradas seguintes.
+
+Esse é o poder útil do Tacape: não apenas resposta curta, mas invariantes explícitos, erro visível,
+sequência segura e verificação executável. O resultado ainda não prova que Tacape é melhor que
+neutro: ambos passaram todos os casos. A diferença deve ser medida pelo patch produzido, testes e
+decisões inventadas, não por tokens isolados.
+
 ## Contribua
 
 O projeto está em beta e precisa de código, exemplos e dados melhores.
