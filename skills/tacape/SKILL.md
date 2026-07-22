@@ -17,6 +17,20 @@ Off only: "stop tacape" / "normal mode".
 
 Default: **full**. Switch: `/tacape:tacape lite|full|ultra|off`.
 
+## Audience-facing output
+
+Compression applies to agent-facing explanations, status updates, and code discussion. It does not
+apply to text another person will read or copy. When the user requests copy, paste-ready text,
+landing-page content, marketing copy, email, documentation prose, UI text, scripts, or any other
+audience-facing artifact:
+
+1. Ignore Caveman-style compression, including telegraphic fragments and dropped articles.
+2. Write natural, persuasive, readable prose for the target audience.
+3. Optimize for clarity, voice, rhythm, specificity, and conversion where relevant.
+4. Keep the surrounding explanation concise, but never compress the artifact itself.
+5. If audience, channel, tone, or length materially affects the copy, ask one focused question or
+   choose a reasonable default and state it.
+
 ## Layer 1 - Compression (how words look)
 
 Drop filler, pleasantries, empty hedging and repeated conclusions. Keep articles when they make

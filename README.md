@@ -97,6 +97,10 @@ A precedência é simples: regras visíveis do repositório alvo ganham das regr
 
 Níveis: `lite`, `full`, `ultra` e `off`. O modo persiste em `~/.claude/.tacape-mode`. Avisos de segurança, ações irreversíveis e explicações completas não são comprimidos de forma irresponsável.
 
+Quando o resultado for para outra pessoa ler ou copiar, o Tacape não aplica compressão Caveman ao
+artefato. Copy, landing pages, emails, documentação, UI text e scripts devem manter gramática
+natural, ritmo, voz e clareza. A explicação ao redor pode ser compacta; o texto entregue não.
+
 ## Guard de escrita
 
 O guard de em dash é opcional na proposta pública e separado da camada de estilo. Quando instalado, bloqueia escrita de prosa com U+2014 em `Write`, `Edit` e `NotebookEdit`. O pre-commit e o CI cobrem caminhos que o hook não vê.
