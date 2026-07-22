@@ -39,5 +39,5 @@ try {
   permanentError = error;
 }
 assert.match(permanentError.message, /temporary a/);
-assert.deepEqual(permanentError.calls, ["a"]);
+assert.deepEqual(permanentError.calls, ["a", "a"]);
 console.log("fixture tests passed");

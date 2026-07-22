@@ -155,6 +155,12 @@ Tacape, um trial para cada modo.
 O benchmark usa arquivos e testes reais em sandbox temporário. Não considera resposta correta sem
 execução bem-sucedida do teste.
 
+### Benchmark endurecido
+
+O sandbox agora exige que os testes falhem antes da mudança, congela hash dos testes, rejeita
+qualquer edição neles, executa a suíte original depois e captura o diff da implementação.
+Em Terra, neutro e Tacape passaram um trial cada sob esse contrato.
+
 ## Contribua
 
 O projeto está em beta e precisa de código, exemplos e dados melhores.

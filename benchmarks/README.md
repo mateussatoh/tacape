@@ -79,5 +79,11 @@ python3 benchmarks/run-refactor-sandbox.py \
 ```
 
 A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença percentual contra neutro.
+
+## Hardened contract
+
+The sandbox verifies baseline failure, freezes test-file hashes, rejects test edits, runs unchanged
+tests after the agent edit, and records implementation diffs. A passing test alone is insufficient.
+Terra passed one neutral and one Tacape trial under this contract.
 Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
 ação, segurança e clareza.
