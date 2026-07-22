@@ -1,0 +1,12 @@
+[
+  {
+    "id": "refactor-missing-context",
+    "category": "quality-refactor",
+    "prompt": "Refactor a callback-based file import pipeline to async functions while preserving retries, ordering, and error visibility. No repository files or implementation were provided. Respond with the smallest useful next step, without inventing APIs or a full hypothetical implementation."
+  },
+  {
+    "id": "refactor-with-context",
+    "category": "quality-refactor",
+    "prompt": "Refactor this TypeScript pipeline while preserving sequential ordering, per-file retries, and visible failures. Keep the patch minimal and add focused tests.\n\nCurrent code:\n```ts\nexport function importFiles(files: string[], done: (error?: Error) => void) {\n  let index = 0;\n  function next(error?: Error) {\n    if (error) return done(error);\n    if (index === files.length) return done();\n    importFile(files[index++], (fileError) => {\n      if (fileError) return retry(fileError, next);\n      next();\n    });\n  }\n  next();\n}\n\nfunction retry(error: Error, next: (error?: Error) => void) {\n  setTimeout(() => next(error), 100);\n}\n```\n\nAssume `importFile` is callback-based and may fail transiently. Do not add concurrency, logging, progress callbacks, or new domain abstractions."
+  }
+]

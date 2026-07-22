@@ -33,6 +33,20 @@ The runner creates a fresh no-tools, no-session turn for every model, prompt, mo
 writes raw JSONL results and records failed providers separately. A provider fallback is not counted
 as a successful run for the requested model.
 
+## Quality-focused refactor benchmark
+
+```bash
+python3 benchmarks/run-omp.py \
+  openai-codex/gpt-5.6-terra \
+  --prompts benchmarks/quality-prompts.json \
+  --trials 2 \
+  --output benchmarks/results-quality-terra.jsonl
+```
+
+This isolates two quality gates: asking for missing context and applying a minimal refactor to
+provided code. Review responses for correctness, invariant preservation, applicability, and
+unnecessary invention. Token count is not a quality score.
+
 A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença percentual contra neutro.
 Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
 ação, segurança e clareza.

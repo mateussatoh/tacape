@@ -66,11 +66,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("models", nargs="+", help="OMP provider/model selectors")
     parser.add_argument("--trials", type=int, default=2)
+    parser.add_argument("--prompts", type=Path, default=PROMPTS, help="Prompt JSON file")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--output", default="benchmarks/results-omp.jsonl")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
-    prompts = json.loads(PROMPTS.read_text())
+    prompts = json.loads(args.prompts.read_text())
     modes = {"neutral": "You are a helpful coding assistant.", "tacape": SKILL.read_text()}
     calls = len(args.models) * len(prompts) * len(modes) * args.trials
     if args.dry_run:
