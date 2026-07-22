@@ -17,7 +17,6 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/mateussatoh/tacape?style=flat" alt="Licença"></a>
 </p>
 
-[English](./README_en.md)
 
 ## O problema
 
