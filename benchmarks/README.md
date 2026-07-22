@@ -85,5 +85,15 @@ A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença pe
 The sandbox verifies baseline failure, freezes test-file hashes, rejects test edits, runs unchanged
 tests after the agent edit, and records implementation diffs. A passing test alone is insufficient.
 Terra passed one neutral and one Tacape trial under this contract.
+
+## Public headline
+
+Using the same five prompts and the same `openai-codex/gpt-5.6-terra` model, Tacape produced a
+median of 490 output tokens versus 625 with neutral instructions across 20 successful runs:
+**21% fewer output tokens**.
+
+This is an output-efficiency result. The benchmark does not claim that fewer tokens alone prove
+better answers; answer quality is evaluated separately. Audience-facing artifacts are exempt from
+Caveman compression and must remain natural and complete.
 Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
 ação, segurança e clareza.
