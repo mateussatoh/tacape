@@ -103,24 +103,30 @@ O guard de em dash é opcional na proposta pública e separado da camada de esti
 
 Não é uma regra sobre código, fixtures ou intervalos numéricos. Existe para evitar copy com aparência automática, não para quebrar o repositório.
 
-## Benchmark inicial
+## Benchmark
 
-GPT-5.6, cinco prompts, três trials por instrução, 60 chamadas de API. Métrica: mediana de tokens de saída.
+Benchmark executado no OMP com `openai-codex/gpt-5.6-terra`, cinco prompts, dois trials por modo e
+20 execuções bem-sucedidas. Métrica: mediana de tokens de saída por categoria.
 
-| Instrução | Tokens | Diferença contra neutro |
-|---|---:|---:|
-| Neutra | 1247 | 0% |
-| Tacape | 1515 | 21% mais |
+| Categoria | Neutra | Tacape | Diferença |
+|---|---:|---:|---:|
+| coding | 593 | 540 | 9% menos |
+| debugging | 779 | 601 | 23% menos |
+| review | 204 | 154 | 25% menos |
+| refactor | 544 | 960 | 76% mais |
+| explanation | 676 | 490 | 27% menos |
+| **geral** | **625** | **490** | **21% menos** |
 
-Esse resultado mede custo de saída, não qualidade. Tacape adiciona regras de engenharia e estrutura,
-então pode escrever mais em tarefas como `explain` e `refactor`. O benchmark ainda não prova melhora
-de qualidade. A próxima medição deve avaliar correção, ação, segurança e clareza contra neutro.
+Tacape reduziu output em quatro categorias. `refactor` foi o ponto ruim: as regras de engenharia
+fizeram a resposta crescer 76%. Isso virou próximo alvo de ajuste. Token menor não prova qualidade;
+o benchmark mede custo de saída, não correção, clareza ou segurança.
 
 Rode localmente:
 
 ```bash
-python3 benchmarks/run-openai.py --dry-run
-OPENAI_API_KEY=... python3 benchmarks/run-openai.py --trials 3
+python3 benchmarks/run-omp.py \
+  openai-codex/gpt-5.6-terra \
+  --trials 2
 ```
 
 ## Contribua
