@@ -12,12 +12,16 @@ node imports.test.js. Finish only after the test passes."""
 
 
 def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("model")
-    p.add_argument("--trials", type=int, default=2)
-    p.add_argument("--timeout", type=int, default=300)
-    p.add_argument("--output", default="benchmarks/results-refactor-sandbox.jsonl")
-    args = p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("model")
+    parser.add_argument("--mode", choices=("neutral", "tacape"), default="tacape")
+    parser.add_argument("--trials", type=int, default=2)
+    parser.add_argument("--timeout", type=int, default=300)
+    parser.add_argument("--output", default="benchmarks/results-refactor-sandbox.jsonl")
+    args = parser.parse_args()
+    instructions = "You are a helpful coding assistant."
+    if args.mode == "tacape":
+        instructions = (ROOT.parent / "skills" / "tacape" / "SKILL.md").read_text()
     out = Path(args.output)
     with out.open("w") as f:
         for trial in range(1, args.trials + 1):
@@ -25,21 +29,22 @@ def main():
             shutil.copytree(FIXTURE, sandbox / FIXTURE.name)
             cwd = sandbox / FIXTURE.name
             started = time.perf_counter()
-            command = ["omp", "-p", "--mode", "json", "--model", args.model, PROMPT]
+            command = ["omp", "-p", "--mode", "json", "--model", args.model,
+                       "--system-prompt", instructions, PROMPT]
             try:
                 result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, timeout=args.timeout)
-                answer = result.stdout[-12000:]
                 test = subprocess.run(["node", "imports.test.js"], cwd=cwd, capture_output=True, text=True)
-                row = {"model": args.model, "trial": trial, "ok": test.returncode == 0,
+                row = {"model": args.model, "mode": args.mode, "trial": trial, "ok": test.returncode == 0,
                        "duration_ms": round((time.perf_counter() - started) * 1000),
                        "agent_exit": result.returncode, "test_exit": test.returncode,
-                       "answer": answer, "test_output": (test.stdout + test.stderr)[-4000:]}
+                       "answer": result.stdout[-12000:], "test_output": (test.stdout + test.stderr)[-4000:]}
             except subprocess.TimeoutExpired as error:
-                row = {"model": args.model, "trial": trial, "ok": False, "error": str(error)}
+                row = {"model": args.model, "mode": args.mode, "trial": trial, "ok": False, "error": str(error)}
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
             f.flush()
             print(json.dumps({k: row[k] for k in row if k not in {"answer", "test_output"}}), flush=True)
             shutil.rmtree(sandbox, ignore_errors=True)
+
 
 if __name__ == "__main__":
     main()
