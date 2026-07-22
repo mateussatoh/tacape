@@ -39,14 +39,10 @@ def main():
     parser.add_argument("--model", default=os.environ.get("OPENAI_MODEL", "gpt-5.6"))
     parser.add_argument("--trials", type=int, default=3)
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--caveman-skill", default="/tmp/caveman-reference/skills/caveman/SKILL.md")
-    parser.add_argument("--adhd-skill", default="/tmp/i-have-adhd-reference/skills/i-have-adhd/SKILL.md")
     args = parser.parse_args()
     prompts = json.loads(PROMPTS.read_text())
     modes = {
         "neutral": "You are a helpful coding assistant.",
-        "caveman": read_skill(args.caveman_skill),
-        "adhd": read_skill(args.adhd_skill),
         "tacape": read_skill(ROOT / "skills/tacape/SKILL.md"),
     }
     if args.dry_run:

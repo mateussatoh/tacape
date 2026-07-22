@@ -110,17 +110,17 @@ GPT-5.6, cinco prompts, três trials por instrução, 60 chamadas de API. Métri
 | Instrução | Tokens | Diferença contra neutro |
 |---|---:|---:|
 | Neutra | 1247 | 0% |
-| Caveman | 837 | 33% menos |
-| i-have-adhd | 1561 | 25% mais |
 | Tacape | 1515 | 21% mais |
 
-O benchmark inicial de um trial por prompt tinha mostrado 37% menos para Tacape. O benchmark com mais trials foi pior. Hoje a conclusão honesta é: Caveman comprime melhor; Tacape troca parte dessa economia por estrutura e regras de engenharia. Ainda não há evidência suficiente para afirmar melhora de qualidade.
+Esse resultado mede custo de saída, não qualidade. Tacape adiciona regras de engenharia e estrutura,
+então pode escrever mais em tarefas como `explain` e `refactor`. O benchmark ainda não prova melhora
+de qualidade. A próxima medição deve avaliar correção, ação, segurança e clareza contra neutro.
 
 Rode localmente:
 
 ```bash
 python3 benchmarks/run-openai.py --dry-run
-OPENAI_API_KEY=... python3 benchmarks/run-openai.py
+OPENAI_API_KEY=... python3 benchmarks/run-openai.py --trials 3
 ```
 
 ## Contribua

@@ -222,11 +222,11 @@ check_both() {
   else bad "$label" "present in SKILL.md=$a AGENTS.md=$b (drift)"; fi
 }
 
-check_both 'both copies ban U+2014'            'Zero U+2014'
-check_both 'both copies cap lists at 5'        'Cap lists at 5'
-check_both 'both copies keep the off switch'   'normal mode'
-check_both 'both copies keep safety override'  'Safety beats brevity'
-check_both 'both copies exempt code comments'  'Internal code comments are exempt'
+check_both 'both copies document optional write guard' 'write guard'
+check_both 'both copies cap lists at 5'            'Cap lists at five'
+check_both 'both copies keep the off switch'       'off'
+check_both 'both copies keep safety override'      'Security warning or irreversible action'
+check_both 'both copies keep code comments exact'  'Code blocks are never compressed'
 
 # One concrete claim that drifted before: where the level persists.
 if grep -q 'persists for the session' AGENTS.md; then

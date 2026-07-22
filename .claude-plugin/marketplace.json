@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "tacape",
-  "description": "Compressed, action-first output mode plus language-agnostic engineering principles.",
+  "description": "Action-first output, concise normal-grammar replies, and opinionated engineering rules.",
   "owner": {
     "name": "Mateus Satoh",
     "url": "https://github.com/mateussatoh"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "tacape",
-      "description": "Cut the filler, lead with the next action, ban the em dash at write time, apply solid engineering principles.",
+      "description": "Cut filler, lead with the next action, keep output scan-friendly and code reviewable.",
       "source": "./",
       "category": "productivity"
     }

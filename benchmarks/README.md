@@ -1,39 +1,24 @@
-# Tacape benchmarks
+# Tacape benchmark
 
-## Skills comparison
+Compara resposta neutra com Tacape. O objetivo é medir o custo e o efeito do ruleset, não disputar
+qual plugin fala menos.
 
-`run-openai.py` compares four instruction sets on identical prompts:
+O benchmark usa OpenAI Responses API, mesmo modelo, mesmo conjunto de prompts, formato fixo de
+requisição, trials repetidos e mediana de tokens de saída. Registra também SHA256 do ruleset Tacape.
+Resultados dependem do modelo, prompts e quantidade de trials.
 
-- neutral system prompt;
-- Caveman;
-- i-have-adhd;
-- Tacape.
-
-Both reference repositories are optional inputs. Defaults expect local comparison clones at:
-
-```text
-/tmp/caveman-reference/skills/caveman/SKILL.md
-/tmp/i-have-adhd-reference/skills/i-have-adhd/SKILL.md
-```
-
-Dry run, no network:
+## Dry run
 
 ```bash
 python3 benchmarks/run-openai.py --dry-run
 ```
 
-Real OpenAI run:
+## Execução real
 
 ```bash
-OPENAI_API_KEY=... OPENAI_MODEL=gpt-5.6 python3 benchmarks/run-openai.py
+OPENAI_API_KEY=... OPENAI_MODEL=gpt-5.6 python3 benchmarks/run-openai.py --trials 3
 ```
 
-Override reference paths:
-
-```bash
-python3 benchmarks/run-openai.py \
-  --caveman-skill /path/to/caveman/SKILL.md \
-  --adhd-skill /path/to/i-have-adhd/SKILL.md
-```
-
-The benchmark uses OpenAI Responses API, fixed request shape, repeated trials, median output tokens, and records Tacape ruleset SHA256. It reports measurements, not promises. Results depend on model, prompt set, and trial count.
+A saída mostra tokens de saída de `neutral` e `tacape`, além da diferença percentual contra neutro.
+Token menor não prova resposta melhor. Use benchmark de qualidade separado para medir correção,
+ação, segurança e clareza.
